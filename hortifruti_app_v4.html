@@ -2,16 +2,15 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Hortifruti Manager</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f0; display: flex; justify-content: center; padding: 20px; }
-.app { max-width: 420px; width: 100%; background: #fff; border-radius: 16px; padding: 1.2rem; min-height: 600px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f0; display: flex; justify-content: center; padding: 20px; min-height: 100vh; }
+.app { max-width: 420px; width: 100%; background: #fff; border-radius: 16px; padding: 1.2rem; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
 .screen { display: none; }
 .screen.active { display: block; }
-
-/* ===== GESTOR (igual antes) ===== */
 .header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid #e0e0d8; }
 .header h2 { font-size: 18px; font-weight: 500; color: #1a1a18; flex: 1; }
 .back-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #888; padding: 0; }
@@ -39,7 +38,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #ccc; border-radius: 8px; font-size: 14px; background: #fff; color: #1a1a18; }
 .item-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid #f0f0ea; }
 .item-row:last-child { border-bottom: none; }
-.item-check { width: 20px; height: 20px; accent-color: #1D9E75; cursor: pointer; flex-shrink: 0; }
 .item-name { flex: 1; font-size: 14px; color: #1a1a18; }
 .item-qty { font-size: 13px; color: #888; white-space: nowrap; }
 .section-title { font-size: 11px; font-weight: 500; color: #999; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -47,10 +45,46 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 .info-box { background: #dbeafe; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: #1e40af; }
 .success-box { background: #d1f0e0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 13px; color: #166534; }
 .divider { border: none; border-top: 0.5px solid #e0e0d8; margin: 1rem 0; }
-.forn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-.forn-btn { padding: 10px 8px; border: 0.5px solid #ccc; border-radius: 8px; background: #fff; color: #333; cursor: pointer; font-size: 13px; text-align: center; }
-.forn-btn.selected { background: #dbeafe; color: #1e40af; border-color: transparent; font-weight: 500; }
-.notif-badge { background: #e24b4a; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: auto; }
+.loading { text-align: center; padding: 40px 20px; color: #888; font-size: 14px; }
+.spinner { font-size: 32px; margin-bottom: 12px; animation: spin 1s linear infinite; display: block; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* FUNCIONÁRIO */
+.func-nome-btn { width: 100%; padding: 18px 20px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 14px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left; }
+.func-nome-btn:active { background: #f4f4f0; }
+.func-avatar { width: 44px; height: 44px; border-radius: 50%; background: #dbeafe; color: #1e40af; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; flex-shrink: 0; }
+.func-nome { font-size: 17px; font-weight: 500; color: #1a1a18; }
+.func-cargo { font-size: 13px; color: #888; }
+.pedido-card-func { border: 0.5px solid #e0e0d8; border-radius: 16px; padding: 18px; margin-bottom: 14px; cursor: pointer; background: #fff; }
+.pedido-card-func:active { background: #f7f7f3; }
+.pedido-cliente { font-size: 18px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
+.pedido-info { font-size: 14px; color: #777; margin-bottom: 12px; }
+.progress-bar { display: flex; gap: 6px; margin-bottom: 1.5rem; }
+.progress-step { flex: 1; height: 4px; border-radius: 2px; background: #e0e0d8; }
+.progress-step.done { background: #1D9E75; }
+.progress-step.active { background: #1e40af; }
+.btn-func-principal { width: 100%; padding: 18px; background: #1D9E75; color: #fff; border: none; border-radius: 14px; font-size: 18px; font-weight: 600; cursor: pointer; margin-top: 12px; }
+.btn-func-principal:disabled { background: #ccc; cursor: not-allowed; }
+.forn-btn-grande { width: 100%; padding: 16px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 12px; font-size: 16px; color: #1a1a18; cursor: pointer; text-align: left; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+.forn-btn-grande.selected { background: #d1f0e0; border-color: #1D9E75; color: #166534; font-weight: 500; }
+.item-func-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 0.5px solid #f0f0ea; cursor: pointer; }
+.item-func-row:last-child { border-bottom: none; }
+.item-func-check { width: 28px; height: 28px; border-radius: 8px; border: 2px solid #ccc; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 16px; font-weight: 700; }
+.item-func-check.marcado { background: #1D9E75; border-color: #1D9E75; color: #fff; }
+.item-func-nome { flex: 1; font-size: 16px; color: #1a1a18; }
+.item-func-qty { font-size: 14px; color: #888; font-weight: 500; }
+.foto-box { border: 2px dashed #ccc; border-radius: 16px; padding: 36px 20px; text-align: center; cursor: pointer; margin: 16px 0; }
+.foto-ok { background: #d1f0e0; border-radius: 16px; padding: 20px; text-align: center; margin: 16px 0; }
+.valor-input { font-size: 28px !important; font-weight: 500 !important; text-align: center !important; padding: 16px !important; border-radius: 12px !important; }
+.notif-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: flex-start; align-items: flex-start; padding: 16px; }
+.notif-overlay.show { display: flex; }
+.notif-card { background: #fff; border-radius: 14px; padding: 14px 16px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+.notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.notif-app { font-size: 11px; font-weight: 500; color: #888; }
+.notif-time { font-size: 11px; color: #bbb; margin-left: auto; }
+.notif-title { font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 3px; }
+.notif-body { font-size: 13px; color: #555; }
+.notif-close { margin-top: 10px; width: 100%; padding: 8px; background: #f7f7f3; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; }
 .stepper { display: flex; align-items: center; margin-bottom: 1.5rem; }
 .step { display: flex; flex-direction: column; align-items: center; flex: 1; }
 .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
@@ -60,171 +94,18 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 .step-label { font-size: 10px; color: #888; text-align: center; line-height: 1.3; }
 .step-line { height: 2px; background: #e0e0d8; flex: 1; margin-bottom: 18px; }
 .step-line.done { background: #1D9E75; }
-.perf-bar-wrap { margin: 6px 0 0; }
-.perf-bar-bg { background: #f0f0ea; border-radius: 4px; height: 6px; width: 100%; }
-.perf-bar-fill { height: 6px; border-radius: 4px; background: #1D9E75; }
+.notif-badge { background: #e24b4a; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: auto; cursor: pointer; }
+.passo-header { text-align: center; padding: 0.5rem 0 1.5rem; }
+.passo-num { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #dbeafe; color: #1e40af; font-size: 18px; font-weight: 600; margin-bottom: 10px; }
+.passo-titulo { font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
+.passo-sub { font-size: 14px; color: #888; line-height: 1.5; }
 .tag-novo { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 6px; background: #d1f0e0; color: #166534; margin-left: 6px; vertical-align: middle; }
-.btn-ia { width: 100%; padding: 12px; background: #f7f7f3; color: #333; border: 0.5px solid #ccc; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.notif-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: flex-start; align-items: flex-start; padding: 16px; }
-.notif-overlay.show { display: flex; }
-.notif-card { background: #fff; border-radius: 14px; padding: 14px 16px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-.notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.notif-app { font-size: 11px; font-weight: 500; color: #888; }
-.notif-time { font-size: 11px; color: #bbb; margin-left: auto; }
-.notif-title { font-size: 14px; font-weight: 500; color: #1a1a18; margin-bottom: 3px; }
-.notif-body { font-size: 13px; color: #555; }
-.notif-close { margin-top: 10px; width: 100%; padding: 8px; background: #f7f7f3; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; color: #333; }
-
-/* ===== FUNCIONÁRIO - NOVO ESTILO SIMPLES ===== */
-.func-screen { background: #fff; }
-
-/* Login do funcionário - lista de nomes */
-.func-nome-btn {
-  width: 100%;
-  padding: 18px 20px;
-  background: #fff;
-  border: 0.5px solid #e0e0d8;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  text-align: left;
-}
-.func-nome-btn:active { background: #f4f4f0; }
-.func-avatar {
-  width: 44px; height: 44px; border-radius: 50%;
-  background: #dbeafe; color: #1e40af;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; font-weight: 600; flex-shrink: 0;
-}
-.func-nome { font-size: 17px; font-weight: 500; color: #1a1a18; }
-.func-cargo { font-size: 13px; color: #888; }
-
-/* Passo a passo do funcionário */
-.passo-header {
-  text-align: center;
-  padding: 1rem 0 1.5rem;
-}
-.passo-num {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border-radius: 50%;
-  background: #dbeafe; color: #1e40af;
-  font-size: 18px; font-weight: 600; margin-bottom: 10px;
-}
-.passo-titulo {
-  font-size: 22px; font-weight: 500; color: #1a1a18; margin-bottom: 6px;
-}
-.passo-sub {
-  font-size: 14px; color: #888; line-height: 1.5;
-}
-
-/* Pedido card do funcionário - grande e claro */
-.pedido-card-func {
-  border: 0.5px solid #e0e0d8;
-  border-radius: 16px;
-  padding: 18px;
-  margin-bottom: 14px;
-  cursor: pointer;
-  background: #fff;
-}
-.pedido-card-func:active { background: #f7f7f3; }
-.pedido-cliente { font-size: 18px; font-weight: 500; color: #1a1a18; margin-bottom: 6px; }
-.pedido-info { font-size: 14px; color: #777; margin-bottom: 12px; }
-.pedido-badge-grande {
-  display: inline-block; padding: 8px 16px;
-  border-radius: 20px; font-size: 14px; font-weight: 500;
-}
-
-/* Botão grande verde para ação principal do funcionário */
-.btn-func-principal {
-  width: 100%; padding: 18px;
-  background: #1D9E75; color: #fff;
-  border: none; border-radius: 14px;
-  font-size: 18px; font-weight: 600;
-  cursor: pointer; margin-top: 12px;
-  display: flex; align-items: center; justify-content: center; gap: 10px;
-}
-.btn-func-principal:active { background: #166534; }
-.btn-func-principal:disabled { background: #ccc; cursor: not-allowed; }
-
-.btn-func-secundario {
-  width: 100%; padding: 14px;
-  background: #fff; color: #555;
-  border: 0.5px solid #ccc;
-  border-radius: 14px; font-size: 15px;
-  cursor: pointer; margin-top: 10px;
-}
-
-/* Item check grande para funcionário */
-.item-func-row {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 0; border-bottom: 0.5px solid #f0f0ea;
-  cursor: pointer;
-}
-.item-func-row:last-child { border-bottom: none; }
-.item-func-check {
-  width: 28px; height: 28px; border-radius: 8px;
-  border: 2px solid #ccc; display: flex;
-  align-items: center; justify-content: center;
-  flex-shrink: 0; font-size: 16px; font-weight: 700;
-  transition: all 0.15s;
-}
-.item-func-check.marcado { background: #1D9E75; border-color: #1D9E75; color: #fff; }
-.item-func-nome { flex: 1; font-size: 16px; color: #1a1a18; font-weight: 400; }
-.item-func-qty { font-size: 14px; color: #888; font-weight: 500; }
-
-/* Fornecedor botão grande */
-.forn-btn-grande {
-  width: 100%; padding: 16px;
-  background: #fff; border: 0.5px solid #e0e0d8;
-  border-radius: 12px; font-size: 16px; color: #1a1a18;
-  cursor: pointer; text-align: left; margin-bottom: 10px;
-  display: flex; align-items: center; gap: 12px;
-}
-.forn-btn-grande.selected {
-  background: #d1f0e0; border-color: #1D9E75; color: #166534; font-weight: 500;
-}
-.forn-btn-grande:active { background: #f4f4f0; }
-
-/* Foto comprovante */
-.foto-box {
-  border: 2px dashed #ccc; border-radius: 16px;
-  padding: 36px 20px; text-align: center; cursor: pointer;
-  margin: 16px 0;
-}
-.foto-box:active { background: #f4f4f0; }
-.foto-ok {
-  background: #d1f0e0; border-radius: 16px;
-  padding: 20px; text-align: center; margin: 16px 0;
-}
-
-/* Barra de progresso de passos */
-.progress-bar {
-  display: flex; gap: 6px; margin-bottom: 1.5rem;
-}
-.progress-step {
-  flex: 1; height: 4px; border-radius: 2px; background: #e0e0d8;
-}
-.progress-step.done { background: #1D9E75; }
-.progress-step.active { background: #1e40af; }
-
-/* Valor input grande */
-.valor-input {
-  font-size: 28px !important;
-  font-weight: 500 !important;
-  text-align: center !important;
-  padding: 16px !important;
-  border-radius: 12px !important;
-  letter-spacing: 1px;
-}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- NOTIFICAÇÃO PUSH -->
+  <!-- NOTIFICAÇÃO -->
   <div class="notif-overlay" id="notif-overlay">
     <div class="notif-card">
       <div class="notif-header">
@@ -238,7 +119,7 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- ========== TELA INICIAL ========== -->
+  <!-- LOGIN -->
   <div class="screen active" id="screen-login">
     <div style="text-align:center; padding: 1.5rem 0 1rem;">
       <div style="font-size: 40px; margin-bottom: 8px;">🥬</div>
@@ -248,59 +129,41 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
       <button class="tab-btn active" id="btn-tab-func" onclick="loginTab('func')">Sou funcionário</button>
       <button class="tab-btn" id="btn-tab-gestor" onclick="loginTab('gestor')">Sou gestor</button>
     </div>
-
-    <!-- LOGIN FUNCIONÁRIO -->
     <div id="login-func">
       <p style="font-size:14px; color:#888; margin-bottom:14px; text-align:center;">Toque no seu nome para entrar</p>
-      <button class="func-nome-btn" onclick="entrarComoFunc('João Silva')">
-        <div class="func-avatar">JS</div>
-        <div><div class="func-nome">João Silva</div><div class="func-cargo">Comprador / Entregador</div></div>
-      </button>
-      <button class="func-nome-btn" onclick="entrarComoFunc('Maria Souza')">
-        <div class="func-avatar" style="background:#fde8e8; color:#991b1b;">MS</div>
-        <div><div class="func-nome">Maria Souza</div><div class="func-cargo">Comprador / Entregador</div></div>
-      </button>
-      <button class="func-nome-btn" onclick="entrarComoFunc('Carlos Lima')">
-        <div class="func-avatar" style="background:#d1f0e0; color:#166534;">CL</div>
-        <div><div class="func-nome">Carlos Lima</div><div class="func-cargo">Entregador</div></div>
-      </button>
+      <div id="lista-funcionarios">
+        <div class="loading"><span class="spinner">⏳</span>Carregando...</div>
+      </div>
     </div>
-
-    <!-- LOGIN GESTOR -->
     <div id="login-gestor" style="display:none;">
-      <div class="form-group"><label class="form-label">Senha</label><input type="password" placeholder="••••••"></div>
-      <button class="btn-primary" onclick="go('screen-dono')">Entrar como gestor</button>
+      <div class="form-group"><label class="form-label">Senha</label><input type="password" id="senha-gestor" placeholder="••••••"></div>
+      <div id="erro-senha" style="display:none; color:#991b1b; font-size:13px; margin-bottom:8px;">Senha incorreta.</div>
+      <button class="btn-primary" onclick="entrarGestor()">Entrar como gestor</button>
     </div>
   </div>
 
-  <!-- ========== FUNCIONÁRIO: MEUS PEDIDOS ========== -->
-  <div class="screen func-screen" id="screen-func-pedidos">
+  <!-- FUNCIONÁRIO: MEUS PEDIDOS -->
+  <div class="screen" id="screen-func-pedidos">
     <div class="header">
       <button class="back-btn" onclick="go('screen-login')">←</button>
-      <h2 id="func-nome-header">João Silva</h2>
+      <h2 id="func-nome-header">—</h2>
     </div>
-
-    <p style="font-size:16px; font-weight:500; color:#1a1a18; margin-bottom:4px;">Bom dia! 👋</p>
-    <p style="font-size:14px; color:#888; margin-bottom:1.5rem;">Esses são seus pedidos de hoje:</p>
-
-    <div class="pedido-card-func" onclick="iniciarFluxo('CBMERJ — Batalhão Centro', 'comprar')">
-      <div class="pedido-cliente">CBMERJ</div>
-      <div class="pedido-info">Batalhão Centro • 8 itens</div>
-      <span class="pedido-badge-grande" style="background:#dbeafe; color:#1e40af;">🛒 Precisa comprar e entregar</span>
+    <p style="font-size:16px; font-weight:500; margin-bottom:4px;">Bom dia! 👋</p>
+    <p style="font-size:14px; color:#888; margin-bottom:1.5rem;">Seus pedidos de hoje:</p>
+    <div id="lista-pedidos-func">
+      <div class="loading"><span class="spinner">⏳</span>Carregando pedidos...</div>
     </div>
-
-    <div class="pedido-card-func" onclick="iniciarFluxo('CBMERJ — Grupamento Sul', 'entregar')">
-      <div class="pedido-cliente">CBMERJ</div>
-      <div class="pedido-info">Grupamento Sul • 5 itens</div>
-      <span class="pedido-badge-grande" style="background:#fef3cd; color:#856404;">📦 Só entregar</span>
+    <div id="sem-pedidos" style="display:none; text-align:center; padding:40px 20px; color:#888;">
+      <div style="font-size:40px; margin-bottom:12px;">✅</div>
+      <div style="font-size:16px; font-weight:500;">Nenhum pedido para hoje!</div>
     </div>
   </div>
 
-  <!-- ========== PASSO 1: ONDE COMPROU ========== -->
-  <div class="screen func-screen" id="screen-passo1">
+  <!-- PASSO 1: ONDE COMPROU -->
+  <div class="screen" id="screen-passo1">
     <div class="header">
       <button class="back-btn" onclick="go('screen-func-pedidos')">←</button>
-      <h2 id="passo1-cliente" style="font-size:15px;">CBMERJ — Batalhão Centro</h2>
+      <h2 id="passo1-cliente" style="font-size:15px;">—</h2>
     </div>
     <div class="progress-bar">
       <div class="progress-step active"></div>
@@ -312,23 +175,16 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
       <div class="passo-titulo">Onde você comprou?</div>
       <div class="passo-sub">Toque no lugar onde foi comprar hoje</div>
     </div>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">🏪</span> CEASA</button>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">🏬</span> Fornecedor A</button>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">🏪</span> Mercadão Central</button>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">🚛</span> Distribuidora Norte</button>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">🌿</span> Feira do Produtor</button>
-    <button class="forn-btn-grande" onclick="selecionarFornGrande(this)"><span style="font-size:20px;">➕</span> Outro lugar</button>
+    <div id="lista-fornecedores-passo1"></div>
     <input type="text" id="outro-forn-input" placeholder="Escreva o nome do lugar..." style="display:none; margin-top:10px; font-size:16px; padding:14px;">
-    <button class="btn-func-principal" id="btn-ir-passo2" style="background:#ccc;" disabled onclick="go('screen-passo2')">
-      Próximo →
-    </button>
+    <button class="btn-func-principal" id="btn-ir-passo2" disabled onclick="go('screen-passo2')">Próximo →</button>
   </div>
 
-  <!-- ========== PASSO 2: QUANTO GASTOU ========== -->
-  <div class="screen func-screen" id="screen-passo2">
+  <!-- PASSO 2: QUANTO GASTOU + ITENS -->
+  <div class="screen" id="screen-passo2">
     <div class="header">
       <button class="back-btn" onclick="go('screen-passo1')">←</button>
-      <h2 style="font-size:15px;" id="passo2-cliente">CBMERJ — Batalhão Centro</h2>
+      <h2 id="passo2-cliente" style="font-size:15px;">—</h2>
     </div>
     <div class="progress-bar">
       <div class="progress-step done"></div>
@@ -338,52 +194,26 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     <div class="passo-header">
       <div class="passo-num">2</div>
       <div class="passo-titulo">Quanto você gastou?</div>
-      <div class="passo-sub">Digite o valor total que você pagou</div>
+      <div class="passo-sub">Digite o valor total pago</div>
     </div>
     <div style="position:relative; margin: 8px 0 16px;">
       <span style="position:absolute; left:16px; top:50%; transform:translateY(-50%); font-size:20px; color:#888; font-weight:500;">R$</span>
-      <input type="number" class="valor-input" placeholder="0,00" style="padding-left:52px !important;">
+      <input type="number" id="valor-gasto" class="valor-input" placeholder="0,00" style="padding-left:52px !important;">
     </div>
-    <p class="section-title" style="margin-top:1rem;">O que você conseguiu comprar?</p>
-    <p style="font-size:13px; color:#888; margin-bottom:12px;">Marque os itens que estão com você agora</p>
-    <div class="card" id="itens-compra">
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Tomate</span>
-        <span class="item-func-qty">10 kg</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Alface</span>
-        <span class="item-func-qty">20 un</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Cenoura</span>
-        <span class="item-func-qty">5 kg</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check">✓</div>
-        <span class="item-func-nome">Chuchu</span>
-        <span class="item-func-qty">8 kg</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check">✓</div>
-        <span class="item-func-nome">Beterraba</span>
-        <span class="item-func-qty">3 kg</span>
-      </div>
-    </div>
-    <div id="falta-aviso" style="display:none; background:#fef3cd; border-radius:10px; padding:12px 14px; margin-bottom:8px; font-size:14px; color:#856404;">
-      ⚠️ Itens desmarcados serão registrados como <strong>não encontrados</strong>. Tudo bem?
+    <p class="section-title">O que você conseguiu comprar?</p>
+    <p style="font-size:13px; color:#888; margin-bottom:12px;">Marque os itens que estão com você</p>
+    <div class="card" id="itens-compra-lista"></div>
+    <div id="aviso-falta" style="display:none; background:#fef3cd; border-radius:10px; padding:12px 14px; margin:8px 0; font-size:14px; color:#856404;">
+      ⚠️ Itens desmarcados serão registrados como não encontrados.
     </div>
     <button class="btn-func-principal" onclick="go('screen-passo3')">Próximo →</button>
   </div>
 
-  <!-- ========== PASSO 3: FOTO DA ENTREGA ========== -->
-  <div class="screen func-screen" id="screen-passo3">
+  <!-- PASSO 3: ENTREGA + FOTO -->
+  <div class="screen" id="screen-passo3">
     <div class="header">
       <button class="back-btn" onclick="go('screen-passo2')">←</button>
-      <h2 style="font-size:15px;" id="passo3-cliente">CBMERJ — Batalhão Centro</h2>
+      <h2 id="passo3-cliente" style="font-size:15px;">—</h2>
     </div>
     <div class="progress-bar">
       <div class="progress-step done"></div>
@@ -392,356 +222,160 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
     <div class="passo-header">
       <div class="passo-num">3</div>
-      <div class="passo-titulo">Tire uma foto da entrega</div>
-      <div class="passo-sub">Mostre que os itens foram entregues no destino</div>
+      <div class="passo-titulo">Confirmar entrega</div>
+      <div class="passo-sub">Marque o que foi entregue e tire uma foto</div>
     </div>
-
     <p class="section-title">O que foi entregue?</p>
-    <p style="font-size:13px; color:#888; margin-bottom:12px;">Confirme o que chegou no cliente</p>
-    <div class="card" id="itens-entrega">
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Tomate</span>
-        <span class="item-func-qty">10 kg</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Alface</span>
-        <span class="item-func-qty">20 un</span>
-      </div>
-      <div class="item-func-row" onclick="toggleItem(this)">
-        <div class="item-func-check marcado">✓</div>
-        <span class="item-func-nome">Cenoura</span>
-        <span class="item-func-qty">5 kg</span>
-      </div>
+    <div class="card" id="itens-entrega-lista"></div>
+    <div id="obs-falta-box" style="margin-top:12px; display:none;">
+      <label class="form-label">O que faltou? (opcional)</label>
+      <textarea id="obs-falta-texto" rows="2" placeholder="Ex: chuchu não tinha no CEASA..."></textarea>
     </div>
-
-    <div class="foto-box" id="foto-box" onclick="tirarFoto()">
+    <hr class="divider">
+    <p class="section-title">Foto da entrega <span style="color:#991b1b; font-size:11px;">obrigatório</span></p>
+    <div class="foto-box" id="foto-box" onclick="document.getElementById('foto-input').click()">
       <div style="font-size:48px; margin-bottom:10px;">📷</div>
-      <div style="font-size:18px; font-weight:500; color:#1a1a18; margin-bottom:6px;">Tirar foto</div>
-      <div style="font-size:14px; color:#888;">Toque aqui para fotografar a entrega</div>
+      <div style="font-size:18px; font-weight:500; margin-bottom:6px;">Tirar foto</div>
+      <div style="font-size:14px; color:#888;">Toque para fotografar a entrega</div>
     </div>
+    <input type="file" id="foto-input" accept="image/*" capture="environment" style="display:none;" onchange="fotoSelecionada(this)">
     <div class="foto-ok" id="foto-ok" style="display:none;">
       <div style="font-size:32px; margin-bottom:6px;">✅</div>
-      <div style="font-size:16px; font-weight:500; color:#166534;">Foto enviada!</div>
+      <div style="font-size:16px; font-weight:500; color:#166534;">Foto pronta!</div>
     </div>
-
-    <div id="obs-falta" style="display:none;">
-      <p style="font-size:14px; color:#888; margin-bottom:8px;">O que faltou? (opcional)</p>
-      <textarea rows="2" placeholder="Ex: chuchu e beterraba não tinham no CEASA..." style="font-size:15px;"></textarea>
-    </div>
-
-    <button class="btn-func-principal" id="btn-finalizar-tudo" style="background:#ccc;" disabled onclick="finalizarTudo()">
-      ✅ Pronto, finalizei!
-    </button>
+    <button class="btn-func-principal" id="btn-finalizar" disabled onclick="finalizarEntrega()">✅ Pronto, finalizei!</button>
   </div>
 
-  <!-- ========== TELA DE CONCLUSÃO ========== -->
-  <div class="screen func-screen" id="screen-concluido">
+  <!-- TELA DE CONCLUSÃO -->
+  <div class="screen" id="screen-concluido">
     <div style="text-align:center; padding: 3rem 1rem;">
       <div style="font-size:64px; margin-bottom:16px;">🎉</div>
       <h2 style="font-size:24px; font-weight:500; margin-bottom:10px;">Tudo registrado!</h2>
-      <p style="font-size:15px; color:#888; margin-bottom:2rem; line-height:1.6;" id="msg-conclusao">
-        Pedido do CBMERJ finalizado.<br>O gestor já foi notificado.
-      </p>
-      <button class="btn-func-principal" onclick="go('screen-func-pedidos')" style="font-size:16px;">
-        Ver outros pedidos
-      </button>
+      <p style="font-size:15px; color:#888; margin-bottom:2rem; line-height:1.6;" id="msg-conclusao">Pedido finalizado com sucesso.</p>
+      <button class="btn-func-principal" onclick="go('screen-func-pedidos')" style="font-size:16px;">Ver outros pedidos</button>
     </div>
   </div>
 
-  <!-- ========== PAINEL DO GESTOR ========== -->
+  <!-- PAINEL DO GESTOR -->
   <div class="screen" id="screen-dono">
     <div class="header">
       <button class="back-btn" onclick="go('screen-login')">←</button>
       <h2>Painel do gestor</h2>
-      <div class="notif-badge" onclick="go('screen-notificacoes')" style="cursor:pointer;">3</div>
+      <div class="notif-badge" id="notif-count" onclick="go('screen-notificacoes')" style="display:none;">0</div>
     </div>
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="donoTab(this,'tab-pedidos')">Pedidos</button>
       <button class="tab-btn" onclick="donoTab(this,'tab-funcionarios')">Equipe</button>
       <button class="tab-btn" onclick="donoTab(this,'tab-resumo')">Resumo</button>
-      <button class="tab-btn" onclick="donoTab(this,'tab-relatorio')">Relatório</button>
+      <button class="tab-btn" onclick="donoTab(this,'tab-config')">Config</button>
     </div>
 
     <div id="tab-pedidos">
-      <div class="alert-box">⚠️ 2 entregas com itens faltando hoje</div>
+      <button class="btn-primary" style="margin-bottom:16px;" onclick="go('screen-novo-pedido')">+ Novo pedido</button>
+      <div id="alertas-gestor"></div>
       <p class="section-title">Pedidos de hoje</p>
-      <div class="card" onclick="go('screen-pedido-detalhe')" style="cursor:pointer;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div><div class="card-title">CBMERJ — Batalhão Centro</div><div class="card-sub">8 itens • João Silva • CEASA</div></div>
-          <span class="badge badge-partial">Incompleto</span>
-        </div>
+      <div id="lista-pedidos-gestor">
+        <div class="loading"><span class="spinner">⏳</span>Carregando...</div>
       </div>
-      <div class="card" onclick="go('screen-pedido-ok')" style="cursor:pointer;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div><div class="card-title">HCAP — Unidade Norte</div><div class="card-sub">12 itens • Maria Souza • Fornecedor A</div></div>
-          <span class="badge badge-ok">Entregue</span>
-        </div>
-      </div>
-      <div class="card" onclick="go('screen-pedido-andamento')" style="cursor:pointer;">
-        <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-          <div><div class="card-title">CBMERJ — Grupamento Sul</div><div class="card-sub">5 itens • Carlos Lima</div></div>
-          <span class="badge badge-transit">A caminho</span>
-        </div>
-      </div>
-      <button class="btn-primary" onclick="go('screen-novo-pedido')">+ Novo pedido</button>
     </div>
 
     <div id="tab-funcionarios" style="display:none;">
       <p class="section-title">Desempenho do mês</p>
-      <div class="card" onclick="go('screen-historico-func')" style="cursor:pointer;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <div class="card-title">João Silva</div><span class="badge badge-partial">3 incompletos</span>
-        </div>
-        <div class="card-sub" style="margin-bottom:6px;">18 pedidos • R$ 4.200 gastos</div>
-        <div class="perf-bar-wrap">
-          <div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="font-size:11px; color:#888;">Entregas completas</span><span style="font-size:11px; color:#888;">83%</span></div>
-          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:83%;"></div></div>
-        </div>
-      </div>
-      <div class="card" onclick="go('screen-historico-func2')" style="cursor:pointer;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <div class="card-title">Maria Souza</div><span class="badge badge-ok">100%</span>
-        </div>
-        <div class="card-sub" style="margin-bottom:6px;">22 pedidos • R$ 5.100 gastos</div>
-        <div class="perf-bar-wrap">
-          <div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="font-size:11px; color:#888;">Entregas completas</span><span style="font-size:11px; color:#888;">100%</span></div>
-          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:100%;"></div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <div class="card-title">Carlos Lima</div><span class="badge badge-pending">1 incompleto</span>
-        </div>
-        <div class="card-sub" style="margin-bottom:6px;">12 pedidos • R$ 2.800 gastos</div>
-        <div class="perf-bar-wrap">
-          <div style="display:flex; justify-content:space-between; margin-bottom:3px;"><span style="font-size:11px; color:#888;">Entregas completas</span><span style="font-size:11px; color:#888;">92%</span></div>
-          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:92%;"></div></div>
-        </div>
+      <div id="lista-func-gestor">
+        <div class="loading"><span class="spinner">⏳</span>Carregando...</div>
       </div>
     </div>
 
     <div id="tab-resumo" style="display:none;">
       <p class="section-title">Hoje</p>
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$ 745</div></div>
-        <div class="metric"><div class="metric-label">Pedidos</div><div class="metric-value">3</div></div>
-        <div class="metric"><div class="metric-label">Entregas ok</div><div class="metric-value" style="color:#166534;">1</div></div>
-        <div class="metric"><div class="metric-label">Com faltas</div><div class="metric-value" style="color:#991b1b;">2</div></div>
-      </div>
-      <p class="section-title">Mês</p>
-      <div class="metrics">
-        <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$12.100</div></div>
-        <div class="metric"><div class="metric-label">Pedidos</div><div class="metric-value">52</div></div>
-        <div class="metric"><div class="metric-label">Entregas ok</div><div class="metric-value" style="color:#166534;">48</div></div>
-        <div class="metric"><div class="metric-label">Com faltas</div><div class="metric-value" style="color:#991b1b;">4</div></div>
-      </div>
+      <div id="resumo-hoje" class="metrics"></div>
+      <p class="section-title" style="margin-top:1rem;">Este mês</p>
+      <div id="resumo-mes" class="metrics"></div>
     </div>
 
-    <div id="tab-relatorio" style="display:none;">
-      <p class="section-title">Exportar relatório</p>
-      <div class="form-group"><label class="form-label">Período</label>
-        <select><option>Hoje</option><option selected>Esta semana</option><option>Este mês</option><option>Mês passado</option></select>
-      </div>
+    <div id="tab-config" style="display:none;">
+      <p class="section-title">Cadastrar novo cliente</p>
       <div class="form-group">
-        <label class="form-label">Incluir</label>
-        <div style="display:flex; flex-direction:column; gap:8px; margin-top:4px;">
-          <label style="display:flex; align-items:center; gap:8px; font-size:14px;"><input type="checkbox" checked style="width:16px; height:16px;"> Todos os pedidos</label>
-          <label style="display:flex; align-items:center; gap:8px; font-size:14px;"><input type="checkbox" checked style="width:16px; height:16px;"> Gastos por funcionário</label>
-          <label style="display:flex; align-items:center; gap:8px; font-size:14px;"><input type="checkbox" checked style="width:16px; height:16px;"> Gastos por fornecedor</label>
-          <label style="display:flex; align-items:center; gap:8px; font-size:14px;"><input type="checkbox" checked style="width:16px; height:16px;"> Itens com falta</label>
-        </div>
+        <input type="text" id="novo-cliente-nome" placeholder="Nome do cliente">
       </div>
-      <button class="btn-green" onclick="exportarExcel()">📊 Exportar Excel</button>
-      <div id="export-ok" style="display:none;" class="success-box">✓ Relatório gerado! Verifique seus downloads.</div>
+      <button class="btn-green" onclick="cadastrarCliente()">+ Adicionar cliente</button>
+      <hr class="divider">
+      <p class="section-title">Cadastrar novo funcionário</p>
+      <div class="form-group">
+        <input type="text" id="novo-func-nome" placeholder="Nome do funcionário">
+      </div>
+      <button class="btn-green" onclick="cadastrarFuncionario()">+ Adicionar funcionário</button>
+      <hr class="divider">
+      <p class="section-title">Fornecedores</p>
+      <div id="lista-fornecedores-config"></div>
+      <div class="form-group" style="margin-top:8px;">
+        <input type="text" id="novo-forn-nome" placeholder="Nome do fornecedor">
+      </div>
+      <button class="btn-green" onclick="cadastrarFornecedor()">+ Adicionar fornecedor</button>
     </div>
   </div>
 
   <!-- NOTIFICAÇÕES -->
   <div class="screen" id="screen-notificacoes">
     <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>Notificações</h2></div>
-    <div class="card" style="border-left: 3px solid #e24b4a;">
-      <div style="display:flex; justify-content:space-between;"><div class="card-title" style="color:#991b1b;">⚠️ Entrega incompleta</div><span style="font-size:11px; color:#bbb;">10:32</span></div>
-      <div class="card-sub">João Silva — 2 itens faltando no CBMERJ Batalhão Centro.</div>
-    </div>
-    <div class="card" style="border-left: 3px solid #1D9E75;">
-      <div style="display:flex; justify-content:space-between;"><div class="card-title" style="color:#166534;">✅ Entrega concluída</div><span style="font-size:11px; color:#bbb;">09:55</span></div>
-      <div class="card-sub">Maria Souza concluiu entrega no HCAP Unidade Norte.</div>
-    </div>
-    <div class="card" style="border-left: 3px solid #1e40af;">
-      <div style="display:flex; justify-content:space-between;"><div class="card-title" style="color:#1e40af;">🛒 Compra registrada</div><span style="font-size:11px; color:#bbb;">08:14</span></div>
-      <div class="card-sub">João Silva — R$ 220,00 no CEASA. 3 de 5 itens comprados.</div>
+    <div id="lista-notificacoes">
+      <div class="loading"><span class="spinner">⏳</span>Carregando...</div>
     </div>
   </div>
 
-  <!-- DETALHE PEDIDO INCOMPLETO -->
+  <!-- DETALHE DO PEDIDO -->
   <div class="screen" id="screen-pedido-detalhe">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>CBMERJ — Batalhão Centro</h2></div>
-    <div style="margin-bottom:1rem;"><span class="badge badge-partial">Entrega incompleta</span></div>
-    <div class="stepper">
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Pedido<br>criado</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Compra<br>feita</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">A<br>caminho</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot" style="background:#fde8e8; color:#991b1b; border:1.5px solid #e24b4a;">!</div><div class="step-label">Entregue<br>c/ faltas</div></div>
-    </div>
-    <div class="card">
-      <div class="card-sub" style="margin-bottom:6px;">Funcionário: <strong>João Silva</strong></div>
-      <div class="card-sub" style="margin-bottom:6px;">Fornecedor: <strong>CEASA</strong></div>
-      <div class="card-sub" style="margin-bottom:6px;">Valor pago: <strong>R$ 220,00</strong></div>
-      <div class="card-sub">Comprovante: <span style="color:#166534; font-weight:500;">foto enviada ✓</span></div>
-    </div>
-    <p class="section-title">Itens</p>
-    <div class="card">
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Tomate</span><span class="item-qty">10 kg</span></div>
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Alface</span><span class="item-qty">20 un</span></div>
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Cenoura</span><span class="item-qty">5 kg</span></div>
-      <div class="item-row"><span style="color:#991b1b;">✗</span><span class="item-name" style="color:#991b1b;">Chuchu</span><span class="item-qty" style="color:#991b1b;">8 kg — faltou</span></div>
-      <div class="item-row"><span style="color:#991b1b;">✗</span><span class="item-name" style="color:#991b1b;">Beterraba</span><span class="item-qty" style="color:#991b1b;">3 kg — faltou</span></div>
-    </div>
-    <div class="alert-box">Obs: "Chuchu e beterraba estavam em falta no CEASA hoje."</div>
-    <div style="background:#f7f7f3; border-radius:12px; padding:12px; text-align:center;">
-      <div style="font-size:12px; color:#888; margin-bottom:6px;">Comprovante de entrega</div>
-      <div style="background:#fff; border-radius:8px; padding:16px; font-size:13px; color:#888;">📷 foto_entrega_cbmerj.jpg</div>
-    </div>
-  </div>
-
-  <!-- DETALHE PEDIDO OK -->
-  <div class="screen" id="screen-pedido-ok">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>HCAP — Unidade Norte</h2></div>
-    <div style="margin-bottom:1rem;"><span class="badge badge-ok">Entregue com sucesso</span></div>
-    <div class="stepper">
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Pedido<br>criado</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Compra<br>feita</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">A<br>caminho</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Entregue</div></div>
-    </div>
-    <div class="card">
-      <div class="card-sub" style="margin-bottom:6px;">Funcionário: <strong>Maria Souza</strong></div>
-      <div class="card-sub" style="margin-bottom:6px;">Fornecedor: <strong>Fornecedor A</strong></div>
-      <div class="card-sub" style="margin-bottom:6px;">Valor pago: <strong>R$ 315,00</strong></div>
-      <div class="card-sub">Comprovante: <span style="color:#166534; font-weight:500;">foto enviada ✓</span></div>
-    </div>
-    <p class="section-title">Itens</p>
-    <div class="card">
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Banana</span><span class="item-qty">15 kg</span></div>
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Mamão</span><span class="item-qty">10 un</span></div>
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Laranja</span><span class="item-qty">20 kg</span></div>
-      <div class="item-row"><span style="color:#166534;">✓</span><span class="item-name">Couve</span><span class="item-qty">10 maços</span></div>
-    </div>
-  </div>
-
-  <!-- PEDIDO A CAMINHO -->
-  <div class="screen" id="screen-pedido-andamento">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>CBMERJ — Grupamento Sul</h2></div>
-    <div style="margin-bottom:1rem;"><span class="badge badge-transit">A caminho</span></div>
-    <div class="stepper">
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Pedido<br>criado</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot done">✓</div><div class="step-label">Compra<br>feita</div></div>
-      <div class="step-line done"></div>
-      <div class="step"><div class="step-dot active">→</div><div class="step-label">A<br>caminho</div></div>
-      <div class="step-line"></div>
-      <div class="step"><div class="step-dot pending">—</div><div class="step-label">Entregue</div></div>
-    </div>
-    <div class="card">
-      <div class="card-sub" style="margin-bottom:6px;">Funcionário: <strong>Carlos Lima</strong></div>
-      <div class="card-sub" style="margin-bottom:6px;">Fornecedor: <strong>Feira do Produtor</strong></div>
-      <div class="card-sub">Valor pago: <strong>R$ 210,00</strong></div>
-    </div>
-    <div class="info-box">🕐 Compra registrada às 08:14. Em rota de entrega.</div>
-  </div>
-
-  <!-- HISTÓRICO JOÃO -->
-  <div class="screen" id="screen-historico-func">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>João Silva</h2></div>
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Pedidos mês</div><div class="metric-value">18</div></div>
-      <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$4.200</div></div>
-      <div class="metric"><div class="metric-label">Completos</div><div class="metric-value" style="color:#166534;">15</div></div>
-      <div class="metric"><div class="metric-label">Com faltas</div><div class="metric-value" style="color:#991b1b;">3</div></div>
-    </div>
-    <p class="section-title">Histórico</p>
-    <div class="card"><div style="display:flex; justify-content:space-between;"><div class="card-title">CBMERJ Batalhão Centro</div><span class="badge badge-partial">Incompleto</span></div><div class="card-sub">17/04 • Faltou: chuchu, beterraba • R$220</div></div>
-    <div class="card"><div style="display:flex; justify-content:space-between;"><div class="card-title">HCAP Unidade Norte</div><span class="badge badge-ok">Completo</span></div><div class="card-sub">16/04 • Todos entregues • R$310</div></div>
-    <div class="card"><div style="display:flex; justify-content:space-between;"><div class="card-title">CBMERJ Grupamento Sul</div><span class="badge badge-partial">Incompleto</span></div><div class="card-sub">14/04 • Faltou: espinafre • R$190</div></div>
-  </div>
-
-  <!-- HISTÓRICO MARIA -->
-  <div class="screen" id="screen-historico-func2">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>Maria Souza</h2></div>
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Pedidos mês</div><div class="metric-value">22</div></div>
-      <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$5.100</div></div>
-      <div class="metric"><div class="metric-label">Completos</div><div class="metric-value" style="color:#166534;">22</div></div>
-      <div class="metric"><div class="metric-label">Com faltas</div><div class="metric-value" style="color:#166534;">0</div></div>
-    </div>
-    <div class="success-box">✓ Nenhuma entrega incompleta este mês!</div>
-    <p class="section-title">Histórico</p>
-    <div class="card"><div style="display:flex; justify-content:space-between;"><div class="card-title">HCAP Unidade Norte</div><span class="badge badge-ok">Completo</span></div><div class="card-sub">17/04 • R$315</div></div>
-    <div class="card"><div style="display:flex; justify-content:space-between;"><div class="card-title">CBMERJ Batalhão Centro</div><span class="badge badge-ok">Completo</span></div><div class="card-sub">15/04 • R$290</div></div>
+    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2 id="detalhe-titulo">Pedido</h2></div>
+    <div id="detalhe-conteudo"></div>
   </div>
 
   <!-- NOVO PEDIDO -->
   <div class="screen" id="screen-novo-pedido">
     <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>Novo pedido</h2></div>
-    <div class="form-group"><label class="form-label">Cliente</label>
-      <select><option>CBMERJ — Batalhão Centro</option><option>CBMERJ — Grupamento Sul</option><option>HCAP — Unidade Norte</option><option>+ Novo cliente</option></select>
+    <div class="form-group">
+      <label class="form-label">Cliente</label>
+      <select id="select-cliente"><option value="">Carregando...</option></select>
     </div>
-    <div class="form-group"><label class="form-label">Funcionário responsável</label>
-      <select><option>João Silva</option><option>Maria Souza</option><option>Carlos Lima</option></select>
+    <div class="form-group">
+      <label class="form-label">Funcionário responsável</label>
+      <select id="select-funcionario"><option value="">Carregando...</option></select>
     </div>
-    <div class="form-group"><label class="form-label">Data da entrega</label><input type="date"></div>
+    <div class="form-group">
+      <label class="form-label">Data da entrega</label>
+      <input type="date" id="data-entrega">
+    </div>
     <hr class="divider">
-    <p class="section-title">Importar itens <span class="tag-novo">IA</span></p>
-    <button class="btn-ia" onclick="go('screen-importar-ia')"><span>📎</span> Importar foto ou texto do pedido</button>
-    <p style="text-align:center; font-size:12px; color:#999; margin-bottom:12px;">— ou adicione manualmente —</p>
-    <div class="card" id="itens-lista-novo">
-      <div class="item-row"><input type="text" placeholder="Nome do item" style="flex:1;"><input type="text" placeholder="qtd" style="width:70px;"></div>
+    <p class="section-title">Itens do pedido</p>
+    <div id="itens-novo-pedido">
+      <div class="item-row">
+        <input type="text" placeholder="Item" style="flex:1;">
+        <input type="text" placeholder="Qtd" style="width:70px;">
+        <input type="text" placeholder="Un" style="width:60px;">
+      </div>
     </div>
-    <button class="btn-outline" onclick="addItemNovo()">+ Adicionar item</button>
-    <button class="btn-primary">Salvar pedido</button>
-  </div>
-
-  <!-- IMPORTAR COM IA -->
-  <div class="screen" id="screen-importar-ia">
-    <div class="header"><button class="back-btn" onclick="go('screen-novo-pedido')">←</button><h2>Importar com IA</h2></div>
-    <p style="font-size:14px; color:#777; margin-bottom:1rem;">Cole o texto do pedido. A IA identifica os itens automaticamente.</p>
-    <textarea id="texto-pedido" rows="5" placeholder="Ex: 10kg tomate, 20 alface, 5kg cenoura..."></textarea>
-    <button class="btn-primary" style="margin-top:12px;" onclick="simularIA()">Analisar com IA</button>
-    <div style="display:none; text-align:center; padding:20px;" id="ia-loading">
-      <div style="font-size:24px; margin-bottom:8px;">🤖</div>
-      <div style="font-weight:500; font-size:14px;">Lendo o pedido...</div>
-    </div>
-  </div>
-
-  <!-- RESULTADO IA -->
-  <div class="screen" id="screen-ia-resultado">
-    <div class="header"><button class="back-btn" onclick="go('screen-importar-ia')">←</button><h2>Itens identificados</h2></div>
-    <div class="success-box">🤖 IA identificou 5 itens. Confira abaixo.</div>
-    <div class="card" id="ia-itens">
-      <div class="item-row"><input type="checkbox" class="item-check" checked><span class="item-name">Tomate</span><input type="text" style="width:70px;" value="10 kg"></div>
-      <div class="item-row"><input type="checkbox" class="item-check" checked><span class="item-name">Alface</span><input type="text" style="width:70px;" value="20 un"></div>
-      <div class="item-row"><input type="checkbox" class="item-check" checked><span class="item-name">Cenoura</span><input type="text" style="width:70px;" value="5 kg"></div>
-      <div class="item-row"><input type="checkbox" class="item-check" checked><span class="item-name">Chuchu</span><input type="text" style="width:70px;" value="8 kg"></div>
-      <div class="item-row"><input type="checkbox" class="item-check" checked><span class="item-name">Beterraba</span><input type="text" style="width:70px;" value="3 kg"></div>
-    </div>
-    <button class="btn-outline" onclick="addItemIA()">+ Adicionar item</button>
-    <button class="btn-primary" onclick="go('screen-novo-pedido')">Usar esses itens</button>
+    <button class="btn-outline" onclick="addItemNovoPedido()">+ Adicionar item</button>
+    <button class="btn-primary" onclick="salvarNovoPedido()">Salvar pedido</button>
   </div>
 
 </div>
 
 <script>
-var funcNomeAtual = '';
-var pedidoAtual = '';
+const SUPABASE_URL = 'https://zeufytdcyafyejadkkhq.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_M47aF2iDpf4YhSHRVe19MA_ex-3zEiU';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+const SENHA_GESTOR = '1234';
+const FORNECEDORES_PADRAO = ['CEASA', 'Fornecedor A', 'Mercadão Central', 'Distribuidora Norte', 'Feira do Produtor'];
+
+var funcAtual = null;
+var pedidoAtual = null;
+var fornecedorSelecionado = null;
+var fotoArquivo = null;
+var itensComprados = {};
+var itensEntregues = {};
+
+// ===== NAVEGAÇÃO =====
 function go(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -755,75 +389,18 @@ function loginTab(tab) {
   document.getElementById('btn-tab-gestor').classList.toggle('active', tab === 'gestor');
 }
 
-function entrarComoFunc(nome) {
-  funcNomeAtual = nome;
-  document.getElementById('func-nome-header').textContent = nome;
-  go('screen-func-pedidos');
-}
-
-function iniciarFluxo(pedido, tipo) {
-  pedidoAtual = pedido;
-  document.getElementById('passo1-cliente').textContent = pedido;
-  document.getElementById('passo2-cliente').textContent = pedido;
-  document.getElementById('passo3-cliente').textContent = pedido;
-  if (tipo === 'entregar') {
-    go('screen-passo3');
-  } else {
-    go('screen-passo1');
-  }
-}
-
-function selecionarFornGrande(btn) {
-  document.querySelectorAll('.forn-btn-grande').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  var isOutro = btn.textContent.trim().includes('Outro');
-  document.getElementById('outro-forn-input').style.display = isOutro ? 'block' : 'none';
-  var btnProx = document.getElementById('btn-ir-passo2');
-  btnProx.disabled = false;
-  btnProx.style.background = '#1D9E75';
-}
-
-function toggleItem(row) {
-  var check = row.querySelector('.item-func-check');
-  var marcado = check.classList.contains('marcado');
-  if (marcado) {
-    check.classList.remove('marcado');
-    check.style.color = '#ccc';
-    row.querySelector('.item-func-nome').style.textDecoration = 'line-through';
-    row.querySelector('.item-func-nome').style.color = '#bbb';
-    document.getElementById('falta-aviso') && (document.getElementById('falta-aviso').style.display = 'block');
-    document.getElementById('obs-falta') && (document.getElementById('obs-falta').style.display = 'block');
-  } else {
-    check.classList.add('marcado');
-    check.style.color = '#fff';
-    row.querySelector('.item-func-nome').style.textDecoration = 'none';
-    row.querySelector('.item-func-nome').style.color = '#1a1a18';
-  }
-}
-
-function tirarFoto() {
-  document.getElementById('foto-box').style.display = 'none';
-  document.getElementById('foto-ok').style.display = 'block';
-  var btn = document.getElementById('btn-finalizar-tudo');
-  btn.disabled = false;
-  btn.style.background = '#1D9E75';
-}
-
-function finalizarTudo() {
-  document.getElementById('msg-conclusao').innerHTML = 'Pedido do <strong>' + pedidoAtual + '</strong> finalizado.<br>O gestor já foi notificado. ✅';
-  mostrarNotif('✅ Entrega finalizada!', funcNomeAtual + ' concluiu o pedido de ' + pedidoAtual + '.');
-  go('screen-concluido');
-  setTimeout(() => { fecharNotif(); }, 3500);
-}
-
 function donoTab(btn, tabId) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  ['tab-pedidos','tab-funcionarios','tab-resumo','tab-relatorio'].forEach(t => {
+  ['tab-pedidos','tab-funcionarios','tab-resumo','tab-config'].forEach(t => {
     document.getElementById(t).style.display = t === tabId ? 'block' : 'none';
   });
+  if (tabId === 'tab-funcionarios') carregarFuncionariosGestor();
+  if (tabId === 'tab-resumo') carregarResumo();
+  if (tabId === 'tab-config') carregarConfig();
 }
 
+// ===== NOTIFICAÇÕES =====
 function mostrarNotif(titulo, corpo) {
   document.getElementById('notif-title').textContent = titulo;
   document.getElementById('notif-body').textContent = corpo;
@@ -833,32 +410,477 @@ function fecharNotif() {
   document.getElementById('notif-overlay').classList.remove('show');
 }
 
-function simularIA() {
-  document.getElementById('ia-loading').style.display = 'block';
-  setTimeout(() => { document.getElementById('ia-loading').style.display = 'none'; go('screen-ia-resultado'); }, 2000);
+// ===== INICIALIZAÇÃO =====
+async function init() {
+  await carregarFuncionariosLogin();
 }
-function addItemNovo() {
-  var lista = document.getElementById('itens-lista-novo');
-  var row = document.createElement('div'); row.className = 'item-row';
-  row.innerHTML = '<input type="text" placeholder="Nome do item" style="flex:1;"><input type="text" placeholder="qtd" style="width:70px;">';
-  lista.appendChild(row);
+
+// ===== LOGIN FUNCIONÁRIO =====
+async function carregarFuncionariosLogin() {
+  const { data, error } = await db.from('funcionarios').select('*').order('nome');
+  const container = document.getElementById('lista-funcionarios');
+  if (error || !data) { container.innerHTML = '<p style="color:#991b1b; text-align:center;">Erro ao carregar funcionários.</p>'; return; }
+  const cores = ['#dbeafe:#1e40af', '#fde8e8:#991b1b', '#d1f0e0:#166534', '#fef3cd:#856404', '#ede9fe:#5b21b6'];
+  container.innerHTML = data.map((f, i) => {
+    const [bg, cor] = cores[i % cores.length].split(':');
+    const iniciais = f.nome.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+    return `<button class="func-nome-btn" onclick="entrarComoFunc('${f.id}','${f.nome}')">
+      <div class="func-avatar" style="background:${bg}; color:${cor};">${iniciais}</div>
+      <div><div class="func-nome">${f.nome}</div><div class="func-cargo">Comprador / Entregador</div></div>
+    </button>`;
+  }).join('');
 }
-function addItemIA() {
-  var lista = document.getElementById('ia-itens');
-  var row = document.createElement('div'); row.className = 'item-row';
-  row.innerHTML = '<input type="checkbox" class="item-check" checked><input type="text" placeholder="Nome do item" style="flex:1;"><input type="text" placeholder="qtd" style="width:70px;">';
-  lista.appendChild(row);
+
+async function entrarComoFunc(id, nome) {
+  funcAtual = { id, nome };
+  document.getElementById('func-nome-header').textContent = nome;
+  go('screen-func-pedidos');
+  await carregarPedidosFunc();
 }
-function exportarExcel() {
-  var btn = document.querySelector('#tab-relatorio .btn-green');
-  btn.textContent = '⏳ Gerando...';
-  btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = '📊 Exportar Excel';
-    btn.disabled = false;
-    document.getElementById('export-ok').style.display = 'block';
-  }, 1800);
+
+// ===== PEDIDOS DO FUNCIONÁRIO =====
+async function carregarPedidosFunc() {
+  const container = document.getElementById('lista-pedidos-func');
+  container.innerHTML = '<div class="loading"><span class="spinner">⏳</span>Carregando...</div>';
+  const hoje = new Date().toISOString().split('T')[0];
+  const { data, error } = await db.from('pedidos')
+    .select('*, clientes(nome)')
+    .eq('funcionario_id', funcAtual.id)
+    .gte('data_entrega', hoje)
+    .order('created_at', { ascending: false });
+
+  if (error || !data || data.length === 0) {
+    container.innerHTML = '';
+    document.getElementById('sem-pedidos').style.display = 'block';
+    return;
+  }
+  document.getElementById('sem-pedidos').style.display = 'none';
+  container.innerHTML = data.map(p => {
+    const status = p.status || 'pendente';
+    const badges = {
+      'pendente': ['🛒 Precisa comprar e entregar', '#dbeafe', '#1e40af'],
+      'comprando': ['🛒 Comprando...', '#dbeafe', '#1e40af'],
+      'entregando': ['📦 A caminho', '#ede9fe', '#5b21b6'],
+      'entregue': ['✅ Entregue', '#d1f0e0', '#166534'],
+      'incompleto': ['⚠️ Incompleto', '#fde8e8', '#991b1b'],
+    };
+    const [label, bg, cor] = badges[status] || badges['pendente'];
+    return `<div class="pedido-card-func" onclick="iniciarFluxo('${p.id}', '${p.clientes?.nome || 'Cliente'}', '${status}')">
+      <div class="pedido-cliente">${p.clientes?.nome || 'Cliente'}</div>
+      <div class="pedido-info">${p.data_entrega || ''}</div>
+      <span style="display:inline-block; padding:8px 16px; border-radius:20px; font-size:14px; font-weight:500; background:${bg}; color:${cor};">${label}</span>
+    </div>`;
+  }).join('');
 }
+
+// ===== FLUXO DO FUNCIONÁRIO =====
+async function iniciarFluxo(pedidoId, clienteNome, status) {
+  const { data: pedido } = await db.from('pedidos').select('*, clientes(nome), funcionarios(nome)').eq('id', pedidoId).single();
+  const { data: itens } = await db.from('itens_pedido').select('*').eq('pedido_id', pedidoId);
+  pedidoAtual = { ...pedido, itens: itens || [] };
+  fornecedorSelecionado = null;
+  fotoArquivo = null;
+  itensComprados = {};
+  itensEntregues = {};
+  (itens || []).forEach(i => { itensComprados[i.id] = true; itensEntregues[i.id] = true; });
+
+  document.getElementById('passo1-cliente').textContent = clienteNome;
+  document.getElementById('passo2-cliente').textContent = clienteNome;
+  document.getElementById('passo3-cliente').textContent = clienteNome;
+
+  await carregarFornecedoresPasso1();
+  renderizarItensCompra();
+  renderizarItensEntrega();
+  go('screen-passo1');
+}
+
+async function carregarFornecedoresPasso1() {
+  const container = document.getElementById('lista-fornecedores-passo1');
+  const { data } = await db.from('fornecedores').select('*').order('nome');
+  const lista = (data && data.length > 0) ? data.map(f => f.nome) : FORNECEDORES_PADRAO;
+  const icones = { 'CEASA': '🏪', 'Fornecedor A': '🏬', 'Mercadão Central': '🏪', 'Distribuidora Norte': '🚛', 'Feira do Produtor': '🌿' };
+  container.innerHTML = lista.map(f =>
+    `<button class="forn-btn-grande" onclick="selecionarForn(this,'${f}')">
+      <span style="font-size:20px;">${icones[f] || '🏪'}</span> ${f}
+    </button>`
+  ).join('') + `<button class="forn-btn-grande" onclick="selecionarForn(this,'outro')"><span style="font-size:20px;">➕</span> Outro lugar</button>`;
+}
+
+function selecionarForn(btn, nome) {
+  document.querySelectorAll('.forn-btn-grande').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  if (nome === 'outro') {
+    document.getElementById('outro-forn-input').style.display = 'block';
+    fornecedorSelecionado = null;
+  } else {
+    document.getElementById('outro-forn-input').style.display = 'none';
+    fornecedorSelecionado = nome;
+  }
+  const btnProx = document.getElementById('btn-ir-passo2');
+  btnProx.disabled = false;
+  btnProx.style.background = '#1D9E75';
+}
+
+function renderizarItensCompra() {
+  const container = document.getElementById('itens-compra-lista');
+  if (!pedidoAtual?.itens?.length) { container.innerHTML = '<p style="color:#888; text-align:center; padding:12px;">Nenhum item neste pedido.</p>'; return; }
+  container.innerHTML = pedidoAtual.itens.map(item =>
+    `<div class="item-func-row" onclick="toggleItemCompra('${item.id}', this)">
+      <div class="item-func-check marcado" id="check-compra-${item.id}">✓</div>
+      <span class="item-func-nome" id="nome-compra-${item.id}">${item.nome}</span>
+      <span class="item-func-qty">${item.quantidade} ${item.unidade || ''}</span>
+    </div>`
+  ).join('');
+}
+
+function toggleItemCompra(id, row) {
+  itensComprados[id] = !itensComprados[id];
+  const check = document.getElementById(`check-compra-${id}`);
+  const nome = document.getElementById(`nome-compra-${id}`);
+  if (itensComprados[id]) {
+    check.classList.add('marcado'); check.style.color = '#fff';
+    nome.style.textDecoration = 'none'; nome.style.color = '#1a1a18';
+  } else {
+    check.classList.remove('marcado'); check.style.color = '#ccc';
+    nome.style.textDecoration = 'line-through'; nome.style.color = '#bbb';
+    document.getElementById('aviso-falta').style.display = 'block';
+  }
+}
+
+function renderizarItensEntrega() {
+  const container = document.getElementById('itens-entrega-lista');
+  if (!pedidoAtual?.itens?.length) { container.innerHTML = '<p style="color:#888; text-align:center; padding:12px;">Nenhum item.</p>'; return; }
+  container.innerHTML = pedidoAtual.itens.map(item =>
+    `<div class="item-func-row" onclick="toggleItemEntrega('${item.id}', this)">
+      <div class="item-func-check marcado" id="check-entrega-${item.id}">✓</div>
+      <span class="item-func-nome" id="nome-entrega-${item.id}">${item.nome}</span>
+      <span class="item-func-qty">${item.quantidade} ${item.unidade || ''}</span>
+    </div>`
+  ).join('');
+}
+
+function toggleItemEntrega(id, row) {
+  itensEntregues[id] = !itensEntregues[id];
+  const check = document.getElementById(`check-entrega-${id}`);
+  const nome = document.getElementById(`nome-entrega-${id}`);
+  if (itensEntregues[id]) {
+    check.classList.add('marcado'); check.style.color = '#fff';
+    nome.style.textDecoration = 'none'; nome.style.color = '#1a1a18';
+  } else {
+    check.classList.remove('marcado'); check.style.color = '#ccc';
+    nome.style.textDecoration = 'line-through'; nome.style.color = '#bbb';
+    document.getElementById('obs-falta-box').style.display = 'block';
+  }
+}
+
+function fotoSelecionada(input) {
+  if (input.files && input.files[0]) {
+    fotoArquivo = input.files[0];
+    document.getElementById('foto-box').style.display = 'none';
+    document.getElementById('foto-ok').style.display = 'block';
+    const btnFin = document.getElementById('btn-finalizar');
+    btnFin.disabled = false;
+    btnFin.style.background = '#1D9E75';
+  }
+}
+
+async function finalizarEntrega() {
+  const btnFin = document.getElementById('btn-finalizar');
+  btnFin.disabled = true;
+  btnFin.textContent = '⏳ Salvando...';
+
+  try {
+    const fornFinal = fornecedorSelecionado || document.getElementById('outro-forn-input').value || 'Não informado';
+    const valor = parseFloat(document.getElementById('valor-gasto').value) || 0;
+    const obs = document.getElementById('obs-falta-texto').value || '';
+    const todosEntregues = Object.values(itensEntregues).every(v => v);
+    const novoStatus = todosEntregues ? 'entregue' : 'incompleto';
+
+    // Upload da foto
+    let fotoUrl = null;
+    if (fotoArquivo) {
+      const nomeArq = `entrega_${pedidoAtual.id}_${Date.now()}.jpg`;
+      const { data: uploadData, error: uploadError } = await db.storage.from('fotos').upload(nomeArq, fotoArquivo);
+      if (!uploadError && uploadData) {
+        const { data: urlData } = db.storage.from('fotos').getPublicUrl(nomeArq);
+        fotoUrl = urlData?.publicUrl;
+      }
+    }
+
+    // Atualizar pedido
+    await db.from('pedidos').update({
+      status: novoStatus,
+      fornecedor: fornFinal,
+      valor_pago: valor,
+      observacao: obs,
+      foto_url: fotoUrl,
+      itens_entregues: itensEntregues,
+      itens_comprados: itensComprados,
+      updated_at: new Date().toISOString()
+    }).eq('id', pedidoAtual.id);
+
+    document.getElementById('msg-conclusao').innerHTML =
+      `Pedido de <strong>${pedidoAtual.clientes?.nome}</strong> ${novoStatus === 'entregue' ? 'entregue com sucesso! ✅' : 'registrado com itens faltando. ⚠️'}<br>O gestor já foi notificado.`;
+    mostrarNotif(
+      novoStatus === 'entregue' ? '✅ Entrega concluída!' : '⚠️ Entrega incompleta!',
+      `${funcAtual.nome} — ${pedidoAtual.clientes?.nome}`
+    );
+    go('screen-concluido');
+    setTimeout(fecharNotif, 3500);
+  } catch (e) {
+    btnFin.disabled = false;
+    btnFin.textContent = '✅ Pronto, finalizei!';
+    alert('Erro ao salvar. Tente novamente.');
+  }
+}
+
+// ===== GESTOR =====
+function entrarGestor() {
+  const senha = document.getElementById('senha-gestor').value;
+  if (senha === SENHA_GESTOR) {
+    document.getElementById('erro-senha').style.display = 'none';
+    go('screen-dono');
+    carregarPedidosGestor();
+    carregarSelectsNovoPedido();
+  } else {
+    document.getElementById('erro-senha').style.display = 'block';
+  }
+}
+
+async function carregarPedidosGestor() {
+  const container = document.getElementById('lista-pedidos-gestor');
+  const alertas = document.getElementById('alertas-gestor');
+  const hoje = new Date().toISOString().split('T')[0];
+  const { data } = await db.from('pedidos')
+    .select('*, clientes(nome), funcionarios(nome)')
+    .gte('data_entrega', hoje)
+    .order('created_at', { ascending: false });
+
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p style="color:#888; text-align:center; padding:20px;">Nenhum pedido para hoje.</p>';
+    return;
+  }
+
+  const incompletos = data.filter(p => p.status === 'incompleto').length;
+  alertas.innerHTML = incompletos > 0
+    ? `<div class="alert-box">⚠️ ${incompletos} entrega${incompletos > 1 ? 's' : ''} com itens faltando hoje</div>`
+    : '';
+
+  const badgeMap = {
+    'pendente': ['Aguardando', 'badge-pending'],
+    'comprando': ['Comprando', 'badge-buying'],
+    'entregando': ['A caminho', 'badge-transit'],
+    'entregue': ['Entregue', 'badge-ok'],
+    'incompleto': ['Incompleto', 'badge-partial'],
+  };
+
+  container.innerHTML = data.map(p => {
+    const [label, cls] = badgeMap[p.status] || badgeMap['pendente'];
+    return `<div class="card" onclick="verDetalhePedido('${p.id}')" style="cursor:pointer;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+          <div class="card-title">${p.clientes?.nome || 'Cliente'}</div>
+          <div class="card-sub">${p.funcionarios?.nome || '—'} • ${p.fornecedor || 'Aguardando compra'}</div>
+        </div>
+        <span class="badge ${cls}">${label}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function verDetalhePedido(id) {
+  const { data: p } = await db.from('pedidos').select('*, clientes(nome), funcionarios(nome)').eq('id', id).single();
+  const { data: itens } = await db.from('itens_pedido').select('*').eq('pedido_id', id);
+  document.getElementById('detalhe-titulo').textContent = p.clientes?.nome || 'Pedido';
+
+  const stepStatuses = {
+    'pendente': [true, false, false, false],
+    'comprando': [true, true, false, false],
+    'entregando': [true, true, true, false],
+    'entregue': [true, true, true, true],
+    'incompleto': [true, true, true, true],
+  };
+  const steps = stepStatuses[p.status] || stepStatuses['pendente'];
+  const stepLabels = ['Pedido criado', 'Compra feita', 'A caminho', 'Entregue'];
+
+  const stepperHtml = `<div class="stepper">
+    ${steps.map((done, i) => `
+      <div class="step">
+        <div class="step-dot ${done ? 'done' : 'pending'}">${done ? '✓' : '—'}</div>
+        <div class="step-label">${stepLabels[i]}</div>
+      </div>
+      ${i < steps.length - 1 ? `<div class="step-line ${done && steps[i+1] ? 'done' : ''}"></div>` : ''}
+    `).join('')}
+  </div>`;
+
+  const itensHtml = itens?.map(item => {
+    const entregue = p.itens_entregues ? p.itens_entregues[item.id] !== false : true;
+    return `<div class="item-row">
+      <span style="color:${entregue ? '#166534' : '#991b1b'}; font-size:16px;">${entregue ? '✓' : '✗'}</span>
+      <span class="item-name" style="color:${entregue ? '#1a1a18' : '#991b1b'};">${item.nome}</span>
+      <span class="item-qty">${item.quantidade} ${item.unidade || ''}</span>
+    </div>`;
+  }).join('') || '<p style="color:#888; padding:12px;">Sem itens cadastrados.</p>';
+
+  const fotoHtml = p.foto_url
+    ? `<img src="${p.foto_url}" style="width:100%; border-radius:12px; margin-top:8px;" />`
+    : `<div style="background:#f7f7f3; border-radius:8px; padding:16px; text-align:center; color:#888; font-size:13px;">Aguardando foto de entrega</div>`;
+
+  document.getElementById('detalhe-conteudo').innerHTML = `
+    ${stepperHtml}
+    <div class="card">
+      <div class="card-sub" style="margin-bottom:6px;">Funcionário: <strong>${p.funcionarios?.nome || '—'}</strong></div>
+      <div class="card-sub" style="margin-bottom:6px;">Fornecedor: <strong>${p.fornecedor || '—'}</strong></div>
+      <div class="card-sub" style="margin-bottom:6px;">Valor pago: <strong>R$ ${p.valor_pago || '0,00'}</strong></div>
+      ${p.observacao ? `<div class="card-sub">Obs: <strong>${p.observacao}</strong></div>` : ''}
+    </div>
+    <p class="section-title">Itens</p>
+    <div class="card">${itensHtml}</div>
+    <p class="section-title">Comprovante</p>
+    ${fotoHtml}
+  `;
+  go('screen-pedido-detalhe');
+}
+
+async function carregarFuncionariosGestor() {
+  const container = document.getElementById('lista-func-gestor');
+  const { data: funcs } = await db.from('funcionarios').select('*').order('nome');
+  const { data: pedidos } = await db.from('pedidos').select('*');
+  if (!funcs) { container.innerHTML = '<p style="color:#888;">Nenhum funcionário.</p>'; return; }
+
+  container.innerHTML = funcs.map(f => {
+    const meusPedidos = (pedidos || []).filter(p => p.funcionario_id === f.id);
+    const total = meusPedidos.length;
+    const completos = meusPedidos.filter(p => p.status === 'entregue').length;
+    const incompletos = meusPedidos.filter(p => p.status === 'incompleto').length;
+    const taxa = total > 0 ? Math.round((completos / total) * 100) : 100;
+    const cor = taxa === 100 ? '#166534' : taxa >= 80 ? '#856404' : '#991b1b';
+    const badgeCls = incompletos > 0 ? 'badge-partial' : 'badge-ok';
+    const badgeLabel = incompletos > 0 ? `${incompletos} incompleto${incompletos > 1 ? 's' : ''}` : '100%';
+    return `<div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div class="card-title">${f.nome}</div>
+        <span class="badge ${badgeCls}">${badgeLabel}</span>
+      </div>
+      <div class="card-sub" style="margin-bottom:6px;">${total} pedidos no total</div>
+      <div style="display:flex; justify-content:space-between; margin-bottom:3px;">
+        <span style="font-size:11px; color:#888;">Entregas completas</span>
+        <span style="font-size:11px; color:${cor}; font-weight:500;">${taxa}%</span>
+      </div>
+      <div style="background:#f0f0ea; border-radius:4px; height:6px; width:100%;">
+        <div style="height:6px; border-radius:4px; background:${cor}; width:${taxa}%;"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function carregarResumo() {
+  const { data: pedidos } = await db.from('pedidos').select('*');
+  const hoje = new Date().toISOString().split('T')[0];
+  const pedidosHoje = (pedidos || []).filter(p => p.data_entrega === hoje);
+  const gastoHoje = pedidosHoje.reduce((s, p) => s + (parseFloat(p.valor_pago) || 0), 0);
+  const okHoje = pedidosHoje.filter(p => p.status === 'entregue').length;
+  const faltasHoje = pedidosHoje.filter(p => p.status === 'incompleto').length;
+  const gastoMes = (pedidos || []).reduce((s, p) => s + (parseFloat(p.valor_pago) || 0), 0);
+
+  document.getElementById('resumo-hoje').innerHTML = `
+    <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$ ${gastoHoje.toFixed(0)}</div></div>
+    <div class="metric"><div class="metric-label">Pedidos</div><div class="metric-value">${pedidosHoje.length}</div></div>
+    <div class="metric"><div class="metric-label">Entregas ok</div><div class="metric-value" style="color:#166534;">${okHoje}</div></div>
+    <div class="metric"><div class="metric-label">Com faltas</div><div class="metric-value" style="color:#991b1b;">${faltasHoje}</div></div>`;
+  document.getElementById('resumo-mes').innerHTML = `
+    <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$ ${gastoMes.toFixed(0)}</div></div>
+    <div class="metric"><div class="metric-label">Total pedidos</div><div class="metric-value">${(pedidos || []).length}</div></div>`;
+}
+
+async function carregarConfig() {
+  const { data } = await db.from('fornecedores').select('*').order('nome');
+  const container = document.getElementById('lista-fornecedores-config');
+  if (!data || data.length === 0) {
+    container.innerHTML = '<p style="color:#888; font-size:13px; margin-bottom:8px;">Nenhum fornecedor cadastrado ainda.</p>';
+    return;
+  }
+  container.innerHTML = data.map(f =>
+    `<div class="item-row"><span class="item-name">${f.nome}</span><span class="badge badge-ok">Ativo</span></div>`
+  ).join('');
+}
+
+async function cadastrarCliente() {
+  const nome = document.getElementById('novo-cliente-nome').value.trim();
+  if (!nome) return alert('Digite o nome do cliente.');
+  const { error } = await db.from('clientes').insert({ nome });
+  if (error) return alert('Erro ao cadastrar.');
+  document.getElementById('novo-cliente-nome').value = '';
+  mostrarNotif('✅ Cliente cadastrado!', nome + ' foi adicionado com sucesso.');
+}
+
+async function cadastrarFuncionario() {
+  const nome = document.getElementById('novo-func-nome').value.trim();
+  if (!nome) return alert('Digite o nome do funcionário.');
+  const { error } = await db.from('funcionarios').insert({ nome });
+  if (error) return alert('Erro ao cadastrar.');
+  document.getElementById('novo-func-nome').value = '';
+  mostrarNotif('✅ Funcionário cadastrado!', nome + ' foi adicionado com sucesso.');
+  await carregarFuncionariosLogin();
+}
+
+async function cadastrarFornecedor() {
+  const nome = document.getElementById('novo-forn-nome').value.trim();
+  if (!nome) return alert('Digite o nome do fornecedor.');
+  const { error } = await db.from('fornecedores').insert({ nome });
+  if (error) return alert('Erro ao cadastrar.');
+  document.getElementById('novo-forn-nome').value = '';
+  await carregarConfig();
+  mostrarNotif('✅ Fornecedor cadastrado!', nome + ' foi adicionado.');
+}
+
+// ===== NOVO PEDIDO =====
+async function carregarSelectsNovoPedido() {
+  const { data: clientes } = await db.from('clientes').select('*').order('nome');
+  const { data: funcs } = await db.from('funcionarios').select('*').order('nome');
+  document.getElementById('select-cliente').innerHTML = clientes?.map(c => `<option value="${c.id}">${c.nome}</option>`).join('') || '';
+  document.getElementById('select-funcionario').innerHTML = funcs?.map(f => `<option value="${f.id}">${f.nome}</option>`).join('') || '';
+  document.getElementById('data-entrega').value = new Date().toISOString().split('T')[0];
+}
+
+function addItemNovoPedido() {
+  const container = document.getElementById('itens-novo-pedido');
+  const row = document.createElement('div'); row.className = 'item-row';
+  row.innerHTML = '<input type="text" placeholder="Item" style="flex:1;"><input type="text" placeholder="Qtd" style="width:70px;"><input type="text" placeholder="Un" style="width:60px;">';
+  container.appendChild(row);
+}
+
+async function salvarNovoPedido() {
+  const clienteId = document.getElementById('select-cliente').value;
+  const funcId = document.getElementById('select-funcionario').value;
+  const data = document.getElementById('data-entrega').value;
+  if (!clienteId || !funcId || !data) return alert('Preencha todos os campos.');
+
+  const { data: pedido, error } = await db.from('pedidos').insert({
+    cliente_id: clienteId, funcionario_id: funcId,
+    data_entrega: data, status: 'pendente'
+  }).select().single();
+
+  if (error || !pedido) return alert('Erro ao salvar pedido.');
+
+  const rows = document.querySelectorAll('#itens-novo-pedido .item-row');
+  const itens = [];
+  rows.forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    const nome = inputs[0].value.trim();
+    const qtd = inputs[1].value.trim();
+    const un = inputs[2].value.trim();
+    if (nome) itens.push({ pedido_id: pedido.id, nome, quantidade: qtd || '1', unidade: un || 'un' });
+  });
+  if (itens.length > 0) await db.from('itens_pedido').insert(itens);
+
+  mostrarNotif('✅ Pedido criado!', 'Pedido salvo com sucesso.');
+  go('screen-dono');
+  await carregarPedidosGestor();
+}
+
+// ===== INICIAR =====
+init();
 </script>
 </body>
 </html>
