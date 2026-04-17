@@ -22,7 +22,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .badge-ok { background: #d1f0e0; color: #166534; }
 .badge-partial { background: #fde8e8; color: #991b1b; }
 .badge-buying { background: #dbeafe; color: #1e40af; }
-.badge-transit { background: #ede9fe; color: #5b21b6; }
 .nav-tabs { display: flex; gap: 6px; margin-bottom: 1.5rem; }
 .tab-btn { flex: 1; padding: 8px 4px; font-size: 12px; border: 0.5px solid #ccc; border-radius: 8px; background: #fff; color: #666; cursor: pointer; }
 .tab-btn.active { background: #dbeafe; color: #1e40af; border-color: transparent; font-weight: 500; }
@@ -33,6 +32,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .btn-primary { width: 100%; padding: 12px; background: #dbeafe; color: #1e40af; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
 .btn-green { width: 100%; padding: 14px; background: #1D9E75; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 .btn-green:disabled { background: #ccc; cursor: not-allowed; }
+.btn-red { width: 100%; padding: 10px; background: #fde8e8; color: #991b1b; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px; }
 .btn-outline { width: 100%; padding: 10px; background: transparent; color: #333; border: 0.5px solid #ccc; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px; }
 .form-group { margin-bottom: 14px; }
 .form-label { font-size: 13px; color: #666; margin-bottom: 6px; display: block; }
@@ -48,34 +48,32 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 
 /* FUNCIONÁRIO */
 .func-nome-btn { width: 100%; padding: 16px 20px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 14px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; gap: 14px; text-align: left; }
-.func-avatar { width: 44px; height: 44px; border-radius: 50%; background: #dbeafe; color: #1e40af; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; flex-shrink: 0; }
+.func-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600; flex-shrink: 0; }
 
 /* PEDIDO CARD */
 .pedido-card { border: 0.5px solid #e0e0d8; border-radius: 16px; padding: 16px; margin-bottom: 12px; cursor: pointer; background: #fff; }
 .pedido-card:active { background: #f7f7f3; }
-.pedido-titulo { font-size: 17px; font-weight: 500; color: #1a1a18; margin-bottom: 4px; }
-.pedido-sub { font-size: 13px; color: #777; margin-bottom: 10px; }
 
 /* PROGRESSO */
 .progresso-bar { background: #f0f0ea; border-radius: 6px; height: 8px; margin: 8px 0 4px; overflow: hidden; }
 .progresso-fill { height: 8px; border-radius: 6px; background: #1D9E75; transition: width 0.3s; }
-.progresso-label { font-size: 11px; color: #888; }
 
 /* ITEM DO PEDIDO */
-.item-pedido-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; border-bottom: 0.5px solid #f0f0ea; }
+.item-pedido-row { display: flex; align-items: center; gap: 10px; padding: 13px 0; border-bottom: 0.5px solid #f0f0ea; }
 .item-pedido-row:last-child { border-bottom: none; }
-.item-status-icon { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
-.item-info { flex: 1; }
-.item-info-nome { font-size: 15px; color: #1a1a18; font-weight: 400; }
-.item-info-sub { font-size: 12px; color: #888; margin-top: 2px; }
-.item-qty-badge { font-size: 13px; font-weight: 500; color: #555; white-space: nowrap; }
-.btn-pegar { padding: 8px 14px; background: #dbeafe; color: #1e40af; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+.item-status-icon { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
+.item-info { flex: 1; min-width: 0; }
+.item-info-nome { font-size: 15px; color: #1a1a18; }
+.item-info-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.item-qty { font-size: 12px; color: #888; white-space: nowrap; flex-shrink: 0; }
+.btn-pegar { padding: 7px 12px; background: #dbeafe; color: #1e40af; border: none; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+.btn-desfazer { padding: 5px 10px; background: #fde8e8; color: #991b1b; border: none; border-radius: 8px; font-size: 11px; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
 
-/* MODAL de registro */
+/* MODAL */
 .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: flex-end; justify-content: center; }
 .modal-overlay.show { display: flex; }
-.modal-box { background: #fff; border-radius: 20px 20px 0 0; padding: 1.5rem; width: 100%; max-width: 420px; }
-.modal-titulo { font-size: 18px; font-weight: 500; margin-bottom: 1rem; }
+.modal-box { background: #fff; border-radius: 20px 20px 0 0; padding: 1.5rem; width: 100%; max-width: 420px; max-height: 85vh; overflow-y: auto; }
+.modal-titulo { font-size: 17px; font-weight: 500; margin-bottom: 1rem; color: #1a1a18; }
 
 /* FOTO */
 .foto-box { border: 2px dashed #ccc; border-radius: 16px; padding: 32px 20px; text-align: center; cursor: pointer; margin: 12px 0; }
@@ -85,23 +83,22 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 .notif-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 300; justify-content: flex-start; align-items: flex-start; padding: 16px; }
 .notif-overlay.show { display: flex; }
 .notif-card { background: #fff; border-radius: 14px; padding: 14px 16px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
-.notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.notif-app { font-size: 11px; font-weight: 500; color: #888; }
-.notif-time { font-size: 11px; color: #bbb; margin-left: auto; }
 .notif-close { margin-top: 10px; width: 100%; padding: 8px; background: #f7f7f3; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; }
-.notif-badge { background: #e24b4a; color: #fff; border-radius: 50%; width: 18px; height: 18px; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-left: auto; cursor: pointer; }
 
-.stepper { display: flex; align-items: center; margin-bottom: 1.5rem; }
-.step { display: flex; flex-direction: column; align-items: center; flex: 1; }
-.step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
-.step-dot.done { background: #d1f0e0; color: #166534; }
-.step-dot.active { background: #dbeafe; color: #1e40af; border: 2px solid #1e40af; }
-.step-dot.pending { background: #f4f4f0; color: #bbb; border: 1.5px solid #e0e0d8; }
-.step-label { font-size: 10px; color: #888; text-align: center; line-height: 1.3; }
-.step-line { height: 2px; background: #e0e0d8; flex: 1; margin-bottom: 18px; }
-.step-line.done { background: #1D9E75; }
-.forn-btn-grande { width: 100%; padding: 14px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 12px; font-size: 15px; color: #1a1a18; cursor: pointer; text-align: left; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+/* FORN BTN */
+.forn-btn-grande { width: 100%; padding: 13px; background: #fff; border: 0.5px solid #e0e0d8; border-radius: 10px; font-size: 14px; color: #1a1a18; cursor: pointer; text-align: left; margin-bottom: 7px; display: flex; align-items: center; gap: 10px; }
 .forn-btn-grande.selected { background: #d1f0e0; border-color: #1D9E75; color: #166534; font-weight: 500; }
+
+/* CADASTRO INLINE */
+.cadastro-inline { display: flex; gap: 8px; margin-top: 8px; }
+.cadastro-inline input { flex: 1; }
+.cadastro-inline button { padding: 9px 14px; background: #1D9E75; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; }
+
+/* LISTA CONFIG */
+.config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid #f0f0ea; }
+.config-item:last-child { border-bottom: none; }
+.config-item-nome { font-size: 14px; color: #1a1a18; }
+.btn-excluir { padding: 4px 10px; background: #fde8e8; color: #991b1b; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -110,49 +107,49 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
   <!-- NOTIFICAÇÃO -->
   <div class="notif-overlay" id="notif-overlay">
     <div class="notif-card">
-      <div class="notif-header">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
         <span style="font-size:18px;">🥬</span>
-        <span class="notif-app">Hortifruti Manager</span>
-        <span class="notif-time">agora</span>
+        <span style="font-size:11px;font-weight:500;color:#888;">Hortifruti Manager</span>
+        <span style="font-size:11px;color:#bbb;margin-left:auto;">agora</span>
       </div>
-      <div style="font-size:14px; font-weight:500; margin-bottom:3px;" id="notif-title"></div>
-      <div style="font-size:13px; color:#555;" id="notif-body"></div>
+      <div style="font-size:14px;font-weight:500;margin-bottom:3px;" id="notif-title"></div>
+      <div style="font-size:13px;color:#555;" id="notif-body"></div>
       <button class="notif-close" onclick="fecharNotif()">Dispensar</button>
     </div>
   </div>
 
-  <!-- MODAL: REGISTRAR COMPRA DE ITEM -->
+  <!-- MODAL: REGISTRAR COMPRA -->
   <div class="modal-overlay" id="modal-compra">
     <div class="modal-box">
       <div class="modal-titulo" id="modal-item-nome">Registrar item</div>
       <div class="form-group">
         <label class="form-label">Onde você comprou?</label>
         <div id="modal-fornecedores"></div>
-        <input type="text" id="modal-outro-forn" placeholder="Outro fornecedor..." style="display:none; margin-top:8px;">
+        <input type="text" id="modal-outro-forn" placeholder="Nome do fornecedor..." style="display:none;margin-top:8px;">
       </div>
       <div class="form-group">
         <label class="form-label">Quanto pagou por este item? (R$)</label>
-        <input type="number" id="modal-valor" placeholder="0,00" style="font-size:20px; padding:12px; text-align:center;">
+        <input type="number" id="modal-valor" placeholder="0,00" style="font-size:20px;padding:12px;text-align:center;">
       </div>
       <button class="btn-green" onclick="confirmarCompraItem()">✓ Registrar que comprei</button>
       <button class="btn-outline" onclick="fecharModal()">Cancelar</button>
     </div>
   </div>
 
-  <!-- MODAL: REGISTRAR ENTREGA -->
+  <!-- MODAL: ENTREGA -->
   <div class="modal-overlay" id="modal-entrega">
     <div class="modal-box">
       <div class="modal-titulo">Registrar entrega</div>
-      <p style="font-size:14px; color:#888; margin-bottom:1rem;">Todos os itens foram comprados! Agora registre a entrega.</p>
+      <p style="font-size:14px;color:#888;margin-bottom:1rem;">Todos os itens comprados! Registre a entrega com uma foto.</p>
       <div class="foto-box" id="modal-foto-box" onclick="document.getElementById('modal-foto-input').click()">
-        <div style="font-size:40px; margin-bottom:8px;">📷</div>
-        <div style="font-size:16px; font-weight:500;">Tirar foto da entrega</div>
-        <div style="font-size:13px; color:#888; margin-top:4px;">Obrigatório para finalizar</div>
+        <div style="font-size:40px;margin-bottom:8px;">📷</div>
+        <div style="font-size:16px;font-weight:500;">Tirar foto da entrega</div>
+        <div style="font-size:13px;color:#888;margin-top:4px;">Obrigatório para finalizar</div>
       </div>
       <input type="file" id="modal-foto-input" accept="image/*" capture="environment" style="display:none;" onchange="modalFotoSelecionada(this)">
       <div class="foto-ok" id="modal-foto-ok" style="display:none;">
-        <div style="font-size:28px; margin-bottom:6px;">✅</div>
-        <div style="font-size:15px; font-weight:500; color:#166534;">Foto pronta!</div>
+        <div style="font-size:28px;margin-bottom:6px;">✅</div>
+        <div style="font-size:15px;font-weight:500;color:#166534;">Foto pronta!</div>
       </div>
       <div class="form-group" style="margin-top:8px;">
         <label class="form-label">Observação (opcional)</label>
@@ -165,21 +162,21 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 
   <!-- ===== LOGIN ===== -->
   <div class="screen active" id="screen-login">
-    <div style="text-align:center; padding: 1.5rem 0 1rem;">
-      <div style="font-size: 40px; margin-bottom: 8px;">🥬</div>
-      <h2 style="font-size: 20px; font-weight: 500;">Hortifruti Manager</h2>
+    <div style="text-align:center;padding:1.5rem 0 1rem;">
+      <div style="font-size:40px;margin-bottom:8px;">🥬</div>
+      <h2 style="font-size:20px;font-weight:500;">Hortifruti Manager</h2>
     </div>
-    <div style="display:flex; gap:10px; margin-bottom:1.5rem;">
+    <div style="display:flex;gap:10px;margin-bottom:1.5rem;">
       <button class="tab-btn active" id="btn-tab-func" onclick="loginTab('func')">Sou funcionário</button>
       <button class="tab-btn" id="btn-tab-gestor" onclick="loginTab('gestor')">Sou gestor</button>
     </div>
     <div id="login-func">
-      <p style="font-size:14px; color:#888; margin-bottom:14px; text-align:center;">Toque no seu nome para entrar</p>
+      <p style="font-size:14px;color:#888;margin-bottom:14px;text-align:center;">Toque no seu nome para entrar</p>
       <div id="lista-funcionarios"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
     </div>
     <div id="login-gestor" style="display:none;">
       <div class="form-group"><label class="form-label">Senha</label><input type="password" id="senha-gestor" placeholder="••••••"></div>
-      <div id="erro-senha" style="display:none; color:#991b1b; font-size:13px; margin-bottom:8px;">Senha incorreta.</div>
+      <div id="erro-senha" style="display:none;color:#991b1b;font-size:13px;margin-bottom:8px;">Senha incorreta.</div>
       <button class="btn-primary" onclick="entrarGestor()">Entrar como gestor</button>
     </div>
   </div>
@@ -190,38 +187,37 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
       <button class="back-btn" onclick="go('screen-login')">←</button>
       <h2 id="func-nome-header">—</h2>
     </div>
-    <p style="font-size:15px; font-weight:500; margin-bottom:4px;">Bom dia! 👋</p>
-    <p style="font-size:13px; color:#888; margin-bottom:1.5rem;">Toque em um pedido para ver os itens e registrar suas compras.</p>
+    <p style="font-size:14px;color:#888;margin-bottom:1.5rem;">Toque em um pedido para registrar suas compras.</p>
     <div id="lista-pedidos-func"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
   </div>
 
-  <!-- ===== FUNCIONÁRIO: DETALHE DO PEDIDO ===== -->
+  <!-- ===== FUNCIONÁRIO: DETALHE PEDIDO ===== -->
   <div class="screen" id="screen-func-pedido-detalhe">
     <div class="header">
-      <button class="back-btn" onclick="go('screen-func-pedidos')">←</button>
+      <button class="back-btn" onclick="voltarPedidos()">←</button>
       <h2 id="func-detalhe-titulo" style="font-size:16px;">Pedido</h2>
     </div>
     <div id="func-progresso-box" style="margin-bottom:1rem;"></div>
-    <div class="info-box" id="func-instrucao">Toque em <strong>"Eu peguei esse item"</strong> nos itens que você foi buscar. Informe onde comprou e quanto pagou.</div>
+    <div class="info-box" id="func-instrucao">Toque em <strong>"Eu peguei"</strong> nos itens que você foi buscar. Informe onde comprou e quanto pagou.</div>
     <div id="func-itens-lista"></div>
     <div id="btn-entrega-box" style="display:none;">
-      <hr style="border:none; border-top:0.5px solid #e0e0d8; margin: 1rem 0;">
-      <div class="success-box">✅ Todos os itens foram comprados! Agora é hora de entregar.</div>
+      <hr style="border:none;border-top:0.5px solid #e0e0d8;margin:1rem 0;">
+      <div class="success-box">✅ Todos os itens foram comprados!</div>
       <button class="btn-green" onclick="abrirModalEntrega()">📦 Registrar entrega</button>
     </div>
   </div>
 
-  <!-- ===== TELA DE CONCLUSÃO ===== -->
+  <!-- ===== CONCLUSÃO ===== -->
   <div class="screen" id="screen-concluido">
-    <div style="text-align:center; padding: 3rem 1rem;">
-      <div style="font-size:64px; margin-bottom:16px;">🎉</div>
-      <h2 style="font-size:24px; font-weight:500; margin-bottom:10px;">Tudo registrado!</h2>
-      <p style="font-size:15px; color:#888; margin-bottom:2rem; line-height:1.6;" id="msg-conclusao">Pedido finalizado.</p>
-      <button class="btn-green" onclick="go('screen-func-pedidos')" style="font-size:16px;">Ver outros pedidos</button>
+    <div style="text-align:center;padding:3rem 1rem;">
+      <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+      <h2 style="font-size:24px;font-weight:500;margin-bottom:10px;">Tudo registrado!</h2>
+      <p style="font-size:15px;color:#888;margin-bottom:2rem;line-height:1.6;" id="msg-conclusao">Pedido finalizado.</p>
+      <button class="btn-green" onclick="voltarPedidos()" style="font-size:16px;">Ver outros pedidos</button>
     </div>
   </div>
 
-  <!-- ===== PAINEL DO GESTOR ===== -->
+  <!-- ===== PAINEL GESTOR ===== -->
   <div class="screen" id="screen-dono">
     <div class="header">
       <button class="back-btn" onclick="go('screen-login')">←</button>
@@ -229,45 +225,56 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
     <div class="nav-tabs">
       <button class="tab-btn active" onclick="donoTab(this,'tab-pedidos')">Pedidos</button>
-      <button class="tab-btn" onclick="donoTab(this,'tab-funcionarios')">Equipe</button>
+      <button class="tab-btn" onclick="donoTab(this,'tab-equipe')">Equipe</button>
       <button class="tab-btn" onclick="donoTab(this,'tab-resumo')">Resumo</button>
       <button class="tab-btn" onclick="donoTab(this,'tab-config')">Config</button>
     </div>
     <div id="tab-pedidos">
-      <button class="btn-primary" style="margin-bottom:16px;" onclick="go('screen-novo-pedido')">+ Novo pedido</button>
+      <button class="btn-primary" style="margin-bottom:16px;" onclick="irNovoPedido()">+ Novo pedido</button>
       <div id="alertas-gestor"></div>
       <p class="section-title">Pedidos de hoje</p>
       <div id="lista-pedidos-gestor"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
     </div>
-    <div id="tab-funcionarios" style="display:none;">
-      <p class="section-title">Desempenho geral</p>
-      <div id="lista-func-gestor"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
+    <div id="tab-equipe" style="display:none;">
+      <p class="section-title">Funcionários</p>
+      <div id="lista-equipe"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
     </div>
     <div id="tab-resumo" style="display:none;">
       <p class="section-title">Hoje</p>
       <div id="resumo-hoje" class="metrics"></div>
       <p class="section-title" style="margin-top:1rem;">Total geral</p>
-      <div id="resumo-mes" class="metrics"></div>
+      <div id="resumo-geral" class="metrics"></div>
     </div>
     <div id="tab-config" style="display:none;">
-      <p class="section-title">Novo cliente</p>
-      <div class="form-group"><input type="text" id="novo-cliente-nome" placeholder="Nome do cliente"></div>
-      <button class="btn-green" onclick="cadastrarCliente()">+ Adicionar cliente</button>
+      <!-- CLIENTES -->
+      <p class="section-title">Clientes</p>
+      <div id="lista-clientes-config" class="card" style="padding:0.5rem 1rem;margin-bottom:4px;"></div>
+      <div class="cadastro-inline">
+        <input type="text" id="novo-cliente-input" placeholder="Nome do cliente">
+        <button onclick="cadastrar('clientes','novo-cliente-input','lista-clientes-config')">+ Adicionar</button>
+      </div>
       <hr class="divider">
-      <p class="section-title">Novo funcionário</p>
-      <div class="form-group"><input type="text" id="novo-func-nome" placeholder="Nome do funcionário"></div>
-      <button class="btn-green" onclick="cadastrarFuncionario()">+ Adicionar funcionário</button>
+      <!-- FUNCIONÁRIOS -->
+      <p class="section-title">Funcionários</p>
+      <div id="lista-func-config" class="card" style="padding:0.5rem 1rem;margin-bottom:4px;"></div>
+      <div class="cadastro-inline">
+        <input type="text" id="novo-func-input" placeholder="Nome do funcionário">
+        <button onclick="cadastrar('funcionarios','novo-func-input','lista-func-config')">+ Adicionar</button>
+      </div>
       <hr class="divider">
-      <p class="section-title">Novo fornecedor</p>
-      <div id="lista-forn-config"></div>
-      <div class="form-group" style="margin-top:8px;"><input type="text" id="novo-forn-nome" placeholder="Nome do fornecedor"></div>
-      <button class="btn-green" onclick="cadastrarFornecedor()">+ Adicionar fornecedor</button>
+      <!-- FORNECEDORES -->
+      <p class="section-title">Fornecedores</p>
+      <div id="lista-forn-config" class="card" style="padding:0.5rem 1rem;margin-bottom:4px;"></div>
+      <div class="cadastro-inline">
+        <input type="text" id="novo-forn-input" placeholder="Nome do fornecedor">
+        <button onclick="cadastrar('fornecedores','novo-forn-input','lista-forn-config')">+ Adicionar</button>
+      </div>
     </div>
   </div>
 
   <!-- DETALHE PEDIDO GESTOR -->
-  <div class="screen" id="screen-pedido-detalhe-gestor">
-    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2 id="gestor-detalhe-titulo">Pedido</h2></div>
+  <div class="screen" id="screen-detalhe-gestor">
+    <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2 id="gestor-detalhe-titulo" style="font-size:16px;">Pedido</h2></div>
     <div id="gestor-detalhe-conteudo"></div>
   </div>
 
@@ -285,154 +292,174 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     <hr class="divider">
     <p class="section-title">Itens do pedido</p>
     <div id="itens-novo-pedido">
-      <div class="item-row" style="display:flex; gap:8px; margin-bottom:8px;">
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
         <input type="text" placeholder="Item" style="flex:1;">
         <input type="text" placeholder="Qtd" style="width:65px;">
         <input type="text" placeholder="Un" style="width:55px;">
       </div>
     </div>
-    <button class="btn-outline" onclick="addItemNovoPedido()">+ Adicionar item</button>
-    <button class="btn-green" onclick="salvarNovoPedido()" style="margin-top:16px;">Salvar pedido</button>
+    <button class="btn-outline" onclick="addItemRow()">+ Adicionar item</button>
+    <button class="btn-green" onclick="salvarPedido()" style="margin-top:16px;">Salvar pedido</button>
   </div>
 
 </div>
 
 <script>
-const SUPABASE_URL = 'https://zeufytdcyafyejadkkhq.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_M47aF2iDpf4YhSHRVe19MA_ex-3zEiU';
+const SURL = 'https://zeufytdcyafyejadkkhq.supabase.co';
+const SKEY = 'sb_publishable_M47aF2iDpf4YhSHRVe19MA_ex-3zEiU';
 const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-const SENHA_GESTOR = '1234';
-const FORNECEDORES_PADRAO = ['CEASA','Fornecedor A','Mercadão Central','Distribuidora Norte','Feira do Produtor'];
+const db = createClient(SURL, SKEY);
+const SENHA = '1234';
+const FPADRAO = ['CEASA','Fornecedor A','Mercadão Central','Distribuidora Norte','Feira do Produtor'];
+const CORES = [['#dbeafe','#1e40af'],['#fde8e8','#991b1b'],['#d1f0e0','#166534'],['#fef3cd','#856404'],['#ede9fe','#5b21b6']];
 
-var funcAtual = null;
-var pedidoDetalhe = null;
-var itemSendoRegistrado = null;
-var fotoEntrega = null;
+var me = null; // funcionário logado
+var pedidoAberto = null;
+var itemModal = null;
+var fotoFile = null;
+var isGestor = false;
 
+// ===== UTILS =====
 function go(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0,0);
 }
-function loginTab(tab) {
-  document.getElementById('login-func').style.display = tab==='func'?'block':'none';
-  document.getElementById('login-gestor').style.display = tab==='gestor'?'block':'none';
-  document.getElementById('btn-tab-func').classList.toggle('active',tab==='func');
-  document.getElementById('btn-tab-gestor').classList.toggle('active',tab==='gestor');
+function loginTab(t) {
+  document.getElementById('login-func').style.display=t==='func'?'block':'none';
+  document.getElementById('login-gestor').style.display=t==='gestor'?'block':'none';
+  document.getElementById('btn-tab-func').classList.toggle('active',t==='func');
+  document.getElementById('btn-tab-gestor').classList.toggle('active',t==='gestor');
 }
-function donoTab(btn, tabId) {
+function donoTab(btn, id) {
   document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  ['tab-pedidos','tab-funcionarios','tab-resumo','tab-config'].forEach(t=>{
-    document.getElementById(t).style.display = t===tabId?'block':'none';
-  });
-  if(tabId==='tab-funcionarios') carregarEquipe();
-  if(tabId==='tab-resumo') carregarResumo();
-  if(tabId==='tab-config') carregarConfig();
+  ['tab-pedidos','tab-equipe','tab-resumo','tab-config'].forEach(t=>
+    document.getElementById(t).style.display=t===id?'block':'none');
+  if(id==='tab-equipe') carregarEquipe();
+  if(id==='tab-resumo') carregarResumo();
+  if(id==='tab-config') carregarConfig();
 }
-function mostrarNotif(titulo, corpo) {
-  document.getElementById('notif-title').textContent = titulo;
-  document.getElementById('notif-body').textContent = corpo;
+function notif(titulo, corpo) {
+  document.getElementById('notif-title').textContent=titulo;
+  document.getElementById('notif-body').textContent=corpo;
   document.getElementById('notif-overlay').classList.add('show');
-  setTimeout(fecharNotif, 4000);
+  setTimeout(fecharNotif,4000);
 }
-function fecharNotif() { document.getElementById('notif-overlay').classList.remove('show'); }
-function fecharModal() { document.getElementById('modal-compra').classList.remove('show'); itemSendoRegistrado = null; }
-function fecharModalEntrega() { document.getElementById('modal-entrega').classList.remove('show'); fotoEntrega = null; }
+function fecharNotif(){ document.getElementById('notif-overlay').classList.remove('show'); }
+function fecharModal(){ document.getElementById('modal-compra').classList.remove('show'); itemModal=null; }
+function fecharModalEntrega(){ document.getElementById('modal-entrega').classList.remove('show'); fotoFile=null; }
+function voltarPedidos(){ go('screen-func-pedidos'); carregarPedidosFunc(); }
 
-// ===== LOGIN =====
+// ===== INIT =====
 async function init() {
-  const { data } = await db.from('funcionarios').select('*').order('nome');
-  const container = document.getElementById('lista-funcionarios');
-  if (!data || data.length === 0) { container.innerHTML = '<p style="color:#888;text-align:center;">Nenhum funcionário cadastrado.</p>'; return; }
-  const cores = [['#dbeafe','#1e40af'],['#fde8e8','#991b1b'],['#d1f0e0','#166534'],['#fef3cd','#856404'],['#ede9fe','#5b21b6']];
-  container.innerHTML = data.map((f,i) => {
-    const [bg,cor] = cores[i%cores.length];
-    const ini = f.nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-    return `<button class="func-nome-btn" onclick="entrarFunc('${f.id}','${f.nome}')">
+  await carregarListaFuncs();
+}
+
+async function carregarListaFuncs() {
+  const {data} = await db.from('funcionarios').select('*').order('nome');
+  const c = document.getElementById('lista-funcionarios');
+  if(!data||!data.length){c.innerHTML='<p style="color:#888;text-align:center;">Nenhum funcionário cadastrado.</p>';return;}
+  c.innerHTML = data.map((f,i)=>{
+    const [bg,cor]=CORES[i%CORES.length];
+    const ini=f.nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    return `<button class="func-nome-btn" onclick="entrarFunc('${f.id}','${f.nome.replace(/'/g,"\\'")}')">
       <div class="func-avatar" style="background:${bg};color:${cor};">${ini}</div>
-      <div><div style="font-size:17px;font-weight:500;color:#1a1a18;">${f.nome}</div><div style="font-size:13px;color:#888;">Comprador / Entregador</div></div>
+      <div><div style="font-size:17px;font-weight:500;color:#1a1a18;">${f.nome}</div>
+      <div style="font-size:13px;color:#888;">Comprador / Entregador</div></div>
     </button>`;
   }).join('');
 }
 
+// ===== LOGIN =====
 async function entrarFunc(id, nome) {
-  funcAtual = { id, nome };
+  me = {id, nome};
+  isGestor = false;
   document.getElementById('func-nome-header').textContent = nome;
   go('screen-func-pedidos');
   await carregarPedidosFunc();
 }
 
-// ===== PEDIDOS DO FUNCIONÁRIO =====
-async function carregarPedidosFunc() {
-  const container = document.getElementById('lista-pedidos-func');
-  container.innerHTML = '<div class="loading"><span class="spinner">⏳</span><br>Carregando...</div>';
-  const hoje = new Date().toISOString().split('T')[0];
-  const { data: pedidos } = await db.from('pedidos')
-    .select('*, clientes(nome)')
-    .gte('data_entrega', hoje)
-    .not('status', 'eq', 'entregue')
-    .order('created_at', { ascending: false });
-
-  if (!pedidos || pedidos.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:40px 20px;color:#888;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:16px;font-weight:500;">Nenhum pedido aberto!</div></div>';
-    return;
+function entrarGestor() {
+  if(document.getElementById('senha-gestor').value===SENHA){
+    isGestor = true;
+    document.getElementById('erro-senha').style.display='none';
+    go('screen-dono');
+    carregarPedidosGestor();
+  } else {
+    document.getElementById('erro-senha').style.display='block';
   }
-
-  // Para cada pedido, buscar progresso
-  const htmls = await Promise.all(pedidos.map(async p => {
-    const { data: itens } = await db.from('itens_pedido').select('*').eq('pedido_id', p.id);
-    const total = itens?.length || 0;
-    const comprados = itens?.filter(i => i.comprado).length || 0;
-    const pct = total > 0 ? Math.round((comprados/total)*100) : 0;
-    const cor = pct === 100 ? '#1D9E75' : pct > 0 ? '#1e40af' : '#ccc';
-    const label = pct === 100 ? '✅ Pronto para entregar' : pct > 0 ? `${comprados}/${total} itens comprados` : `${total} itens aguardando compra`;
-    return `<div class="pedido-card" onclick="abrirPedidoFunc('${p.id}')">
-      <div class="pedido-titulo">${p.clientes?.nome || 'Cliente'}</div>
-      <div class="pedido-sub">${p.data_entrega || ''}</div>
-      <div class="progresso-bar"><div class="progresso-fill" style="width:${pct}%;background:${cor};"></div></div>
-      <div class="progresso-label">${label}</div>
-    </div>`;
-  }));
-  container.innerHTML = htmls.join('');
 }
 
-async function abrirPedidoFunc(pedidoId) {
-  const { data: pedido } = await db.from('pedidos').select('*, clientes(nome)').eq('id', pedidoId).single();
-  const { data: itens } = await db.from('itens_pedido').select('*, funcionarios(nome)').eq('pedido_id', pedidoId);
-  pedidoDetalhe = { ...pedido, itens: itens || [] };
-  document.getElementById('func-detalhe-titulo').textContent = pedido.clientes?.nome || 'Pedido';
-  renderizarDetalhe();
+// ===== PEDIDOS FUNC =====
+async function carregarPedidosFunc() {
+  const c = document.getElementById('lista-pedidos-func');
+  c.innerHTML='<div class="loading"><span class="spinner">⏳</span><br>Carregando...</div>';
+  const hoje = new Date().toISOString().split('T')[0];
+  const {data:pedidos} = await db.from('pedidos')
+    .select('*,clientes(nome)')
+    .gte('data_entrega',hoje)
+    .neq('status','entregue')
+    .order('created_at',{ascending:false});
+  if(!pedidos||!pedidos.length){
+    c.innerHTML='<div style="text-align:center;padding:40px;color:#888;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:16px;font-weight:500;">Nenhum pedido aberto!</div></div>';
+    return;
+  }
+  const htmls = await Promise.all(pedidos.map(async p=>{
+    const {data:itens} = await db.from('itens_pedido').select('comprado').eq('pedido_id',p.id);
+    const total=itens?.length||0;
+    const comp=itens?.filter(i=>i.comprado).length||0;
+    const pct=total>0?Math.round(comp/total*100):0;
+    const cor=pct===100?'#1D9E75':pct>0?'#1e40af':'#ccc';
+    const label=pct===100?'✅ Pronto para entregar':pct>0?`${comp}/${total} itens comprados`:`${total} itens aguardando`;
+    return `<div class="pedido-card" onclick="abrirPedido('${p.id}')">
+      <div style="font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:4px;">${p.clientes?.nome||'Cliente'}</div>
+      <div style="font-size:13px;color:#888;margin-bottom:8px;">${p.data_entrega||''}</div>
+      <div class="progresso-bar"><div class="progresso-fill" style="width:${pct}%;background:${cor};"></div></div>
+      <div style="font-size:11px;color:#888;margin-top:3px;">${label}</div>
+    </div>`;
+  }));
+  c.innerHTML=htmls.join('');
+}
+
+async function abrirPedido(pid) {
+  const {data:p} = await db.from('pedidos').select('*,clientes(nome)').eq('id',pid).single();
+  const {data:itens} = await db.from('itens_pedido').select('*,funcionarios(nome)').eq('pedido_id',pid);
+  pedidoAberto = {...p, itens:itens||[]};
+  document.getElementById('func-detalhe-titulo').textContent = p.clientes?.nome||'Pedido';
+  renderDetalhe();
   go('screen-func-pedido-detalhe');
 }
 
-function renderizarDetalhe() {
-  const itens = pedidoDetalhe.itens || [];
+function renderDetalhe() {
+  const itens = pedidoAberto.itens||[];
   const total = itens.length;
-  const comprados = itens.filter(i => i.comprado).length;
-  const pct = total > 0 ? Math.round((comprados/total)*100) : 0;
+  const comp = itens.filter(i=>i.comprado).length;
+  const pct = total>0?Math.round(comp/total*100):0;
 
-  // Progresso
-  document.getElementById('func-progresso-box').innerHTML = `
+  document.getElementById('func-progresso-box').innerHTML=`
     <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-      <span style="font-size:13px;font-weight:500;color:#1a1a18;">Progresso da compra</span>
-      <span style="font-size:13px;font-weight:600;color:${pct===100?'#166534':'#1e40af'};">${comprados}/${total} itens</span>
+      <span style="font-size:13px;font-weight:500;">Progresso</span>
+      <span style="font-size:13px;font-weight:600;color:${pct===100?'#166534':'#1e40af'};">${comp}/${total} itens</span>
     </div>
-    <div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:${pct}%;background:${pct===100?'#1D9E75':'#1e40af'};"></div></div>`;
+    <div class="progresso-bar" style="height:10px;">
+      <div class="progresso-fill" style="width:${pct}%;background:${pct===100?'#1D9E75':'#1e40af'};"></div>
+    </div>`;
 
-  // Lista de itens
-  const itensHtml = itens.map(item => {
-    const jaMeu = item.comprado_por === funcAtual.id;
-    const jaDeOutro = item.comprado && !jaMeu;
-    if (item.comprado) {
+  const itensHtml = itens.map(item=>{
+    const foiEu = item.comprado_por===me?.id;
+    const foiOutro = item.comprado && !foiEu;
+    if(item.comprado){
       return `<div class="item-pedido-row">
         <div class="item-status-icon">✅</div>
         <div class="item-info">
           <div class="item-info-nome">${item.nome}</div>
-          <div class="item-info-sub">${jaMeu ? '👤 Você comprou' : `👤 ${item.funcionarios?.nome || 'Outro funcionário'} comprou`}</div>
+          <div class="item-info-sub">${foiEu?'👤 Você comprou':`👤 ${item.funcionarios?.nome||'Outro funcionário'}`}</div>
         </div>
-        <div class="item-qty-badge">${item.quantidade} ${item.unidade||''}</div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+          <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
+          ${foiEu||isGestor?`<button class="btn-desfazer" onclick="desfazerItem('${item.id}')">↩ Desfazer</button>`:''}
+        </div>
       </div>`;
     } else {
       return `<div class="item-pedido-row">
@@ -441,310 +468,312 @@ function renderizarDetalhe() {
           <div class="item-info-nome">${item.nome}</div>
           <div class="item-info-sub" style="color:#1e40af;">Aguardando compra</div>
         </div>
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="item-qty-badge">${item.quantidade} ${item.unidade||''}</div>
-          <button class="btn-pegar" onclick="abrirModalCompra('${item.id}','${item.nome}','${item.quantidade} ${item.unidade||''}')">Eu peguei</button>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
+          <button class="btn-pegar" onclick="abrirModalCompra('${item.id}','${item.nome.replace(/'/g,"\\'")}','${item.quantidade} ${item.unidade||''}')">Eu peguei</button>
         </div>
       </div>`;
     }
   }).join('');
-  document.getElementById('func-itens-lista').innerHTML = `<div class="card" style="padding:0.5rem 1rem;">${itensHtml}</div>`;
 
-  // Botão de entrega
-  const btnBox = document.getElementById('btn-entrega-box');
-  btnBox.style.display = pct === 100 ? 'block' : 'none';
+  document.getElementById('func-itens-lista').innerHTML=`<div class="card" style="padding:0.5rem 1rem;">${itensHtml||'<p style="color:#888;text-align:center;padding:12px;">Sem itens.</p>'}</div>`;
+  document.getElementById('btn-entrega-box').style.display = pct===100&&total>0?'block':'none';
+  document.getElementById('func-instrucao').style.display = comp===total&&total>0?'none':'block';
+}
+
+// ===== DESFAZER ITEM =====
+async function desfazerItem(itemId) {
+  if(!confirm('Desfazer este item? Ele voltará para "aguardando compra".')) return;
+  await db.from('itens_pedido').update({comprado:false,comprado_por:null}).eq('id',itemId);
+  // Atualizar local
+  const item = pedidoAberto.itens.find(i=>i.id===itemId);
+  if(item){item.comprado=false;item.comprado_por=null;item.funcionarios=null;}
+  renderDetalhe();
+  notif('↩ Item desfeito','O item voltou para aguardando compra.');
 }
 
 // ===== MODAL COMPRA =====
 async function abrirModalCompra(itemId, nome, qty) {
-  itemSendoRegistrado = { id: itemId, nome, qty };
+  itemModal = {id:itemId, nome, qty};
   document.getElementById('modal-item-nome').textContent = `"${nome}" — ${qty}`;
-  document.getElementById('modal-valor').value = '';
+  document.getElementById('modal-valor').value='';
+  document.getElementById('modal-outro-forn').style.display='none';
+  document.getElementById('modal-outro-forn').value='';
 
-  // Carregar fornecedores
-  const { data: forns } = await db.from('fornecedores').select('*').order('nome');
-  const lista = (forns && forns.length > 0) ? forns.map(f=>f.nome) : FORNECEDORES_PADRAO;
-  const icones = {'CEASA':'🏪','Fornecedor A':'🏬','Mercadão Central':'🏪','Distribuidora Norte':'🚛','Feira do Produtor':'🌿'};
-  document.getElementById('modal-fornecedores').innerHTML = lista.map(f=>
-    `<button class="forn-btn-grande" onclick="selecionarFornModal(this,'${f}')">
-      <span style="font-size:18px;">${icones[f]||'🏪'}</span> ${f}
-    </button>`
-  ).join('') + `<button class="forn-btn-grande" onclick="selecionarFornModal(this,'outro')"><span style="font-size:18px;">➕</span> Outro lugar</button>`;
-  document.getElementById('modal-outro-forn').style.display = 'none';
+  const {data:forns} = await db.from('fornecedores').select('*').order('nome');
+  const lista = (forns&&forns.length>0)?forns.map(f=>f.nome):FPADRAO;
+  const icons={'CEASA':'🏪','Fornecedor A':'🏬','Mercadão Central':'🏪','Distribuidora Norte':'🚛','Feira do Produtor':'🌿'};
+  document.getElementById('modal-fornecedores').innerHTML =
+    lista.map(f=>`<button class="forn-btn-grande" onclick="selForn(this,'${f}')">
+      <span style="font-size:18px;">${icons[f]||'🏪'}</span>${f}
+    </button>`).join('') +
+    `<button class="forn-btn-grande" onclick="selForn(this,'outro')"><span style="font-size:18px;">➕</span>Outro lugar</button>`;
   document.getElementById('modal-compra').classList.add('show');
 }
 
-function selecionarFornModal(btn, nome) {
+function selForn(btn, nome) {
   document.querySelectorAll('#modal-fornecedores .forn-btn-grande').forEach(b=>b.classList.remove('selected'));
   btn.classList.add('selected');
-  document.getElementById('modal-outro-forn').style.display = nome==='outro'?'block':'none';
+  document.getElementById('modal-outro-forn').style.display=nome==='outro'?'block':'none';
 }
 
 async function confirmarCompraItem() {
-  if (!itemSendoRegistrado) return;
-  const fornBtn = document.querySelector('#modal-fornecedores .forn-btn-grande.selected');
-  if (!fornBtn) { alert('Selecione onde comprou.'); return; }
-  const fornNome = fornBtn.textContent.trim().includes('Outro') ? document.getElementById('modal-outro-forn').value : fornBtn.textContent.trim().replace(/^.\s*/,'');
-  const valor = parseFloat(document.getElementById('modal-valor').value) || 0;
+  if(!itemModal) return;
+  const sel = document.querySelector('#modal-fornecedores .forn-btn-grande.selected');
+  if(!sel){alert('Selecione onde comprou.');return;}
+  const isOutro = sel.textContent.trim().startsWith('➕');
+  const forn = isOutro ? document.getElementById('modal-outro-forn').value.trim() : sel.textContent.trim().replace(/^.\s*/,'');
+  if(!forn){alert('Digite o nome do fornecedor.');return;}
+  const valor = parseFloat(document.getElementById('modal-valor').value)||0;
 
-  // Salvar no banco
-  const { error } = await db.from('itens_pedido').update({
-    comprado: true,
-    comprado_por: funcAtual.id,
-  }).eq('id', itemSendoRegistrado.id);
+  const {error} = await db.from('itens_pedido').update({
+    comprado:true, comprado_por:me.id
+  }).eq('id',itemModal.id);
+  if(error){alert('Erro ao salvar: '+error.message);return;}
 
-  // Registrar compra
   await db.from('compras').insert({
-    pedido_id: pedidoDetalhe.id,
-    funcionario_id: funcAtual.id,
-    fornecedor: fornNome,
-    valor_pago: valor
+    pedido_id:pedidoAberto.id, funcionario_id:me.id,
+    fornecedor:forn, valor_pago:valor
   });
 
-  if (error) { alert('Erro ao salvar. Tente novamente.'); return; }
-
-  // Atualizar localmente
-  const item = pedidoDetalhe.itens.find(i => i.id === itemSendoRegistrado.id);
-  if (item) { item.comprado = true; item.comprado_por = funcAtual.id; item.funcionarios = { nome: funcAtual.nome }; }
-
+  const item = pedidoAberto.itens.find(i=>i.id===itemModal.id);
+  if(item){item.comprado=true;item.comprado_por=me.id;item.funcionarios={nome:me.nome};}
   fecharModal();
-  renderizarDetalhe();
-  mostrarNotif('🛒 Item registrado!', `${funcAtual.nome} comprou ${itemSendoRegistrado.nome} em ${fornNome}.`);
+  renderDetalhe();
+  notif('🛒 Item registrado!',`${me.nome} comprou "${itemModal.nome}" em ${forn}.`);
 }
 
 // ===== MODAL ENTREGA =====
-function abrirModalEntrega() {
-  fotoEntrega = null;
-  document.getElementById('modal-foto-box').style.display = 'block';
-  document.getElementById('modal-foto-ok').style.display = 'none';
-  document.getElementById('btn-confirmar-entrega').disabled = true;
-  document.getElementById('modal-obs').value = '';
+function abrirModalEntrega(){
+  fotoFile=null;
+  document.getElementById('modal-foto-box').style.display='block';
+  document.getElementById('modal-foto-ok').style.display='none';
+  document.getElementById('btn-confirmar-entrega').disabled=true;
+  document.getElementById('modal-obs').value='';
   document.getElementById('modal-entrega').classList.add('show');
 }
-
-function modalFotoSelecionada(input) {
-  if (input.files && input.files[0]) {
-    fotoEntrega = input.files[0];
-    document.getElementById('modal-foto-box').style.display = 'none';
-    document.getElementById('modal-foto-ok').style.display = 'block';
-    document.getElementById('btn-confirmar-entrega').disabled = false;
+function modalFotoSelecionada(input){
+  if(input.files&&input.files[0]){
+    fotoFile=input.files[0];
+    document.getElementById('modal-foto-box').style.display='none';
+    document.getElementById('modal-foto-ok').style.display='block';
+    document.getElementById('btn-confirmar-entrega').disabled=false;
   }
 }
-
-async function confirmarEntrega() {
-  document.getElementById('btn-confirmar-entrega').disabled = true;
-  document.getElementById('btn-confirmar-entrega').textContent = '⏳ Salvando...';
+async function confirmarEntrega(){
+  const btn=document.getElementById('btn-confirmar-entrega');
+  btn.disabled=true;btn.textContent='⏳ Salvando...';
   try {
-    let fotoUrl = null;
-    if (fotoEntrega) {
-      const nomeArq = `entrega_${pedidoDetalhe.id}_${Date.now()}.jpg`;
-      const { data: up } = await db.storage.from('fotos').upload(nomeArq, fotoEntrega);
-      if (up) {
-        const { data: urlData } = db.storage.from('fotos').getPublicUrl(nomeArq);
-        fotoUrl = urlData?.publicUrl;
-      }
+    let fotoUrl=null;
+    if(fotoFile){
+      const arq=`entrega_${pedidoAberto.id}_${Date.now()}.jpg`;
+      const {data:up} = await db.storage.from('fotos').upload(arq,fotoFile);
+      if(up){const {data:ud}=db.storage.from('fotos').getPublicUrl(arq);fotoUrl=ud?.publicUrl;}
     }
-    const obs = document.getElementById('modal-obs').value;
     await db.from('pedidos').update({
-      status: 'entregue', foto_url: fotoUrl, observacao: obs,
-      updated_at: new Date().toISOString()
-    }).eq('id', pedidoDetalhe.id);
-
+      status:'entregue',foto_url:fotoUrl,
+      observacao:document.getElementById('modal-obs').value,
+      updated_at:new Date().toISOString()
+    }).eq('id',pedidoAberto.id);
     fecharModalEntrega();
-    document.getElementById('msg-conclusao').innerHTML = `Pedido de <strong>${pedidoDetalhe.clientes?.nome}</strong> entregue com sucesso! ✅`;
-    mostrarNotif('✅ Entrega confirmada!', `${funcAtual.nome} finalizou o pedido de ${pedidoDetalhe.clientes?.nome}.`);
+    document.getElementById('msg-conclusao').innerHTML=`Pedido de <strong>${pedidoAberto.clientes?.nome}</strong> entregue! ✅`;
+    notif('✅ Entrega confirmada!',`${me.nome} finalizou o pedido de ${pedidoAberto.clientes?.nome}.`);
     go('screen-concluido');
-    carregarPedidosFunc();
-  } catch(e) {
-    alert('Erro ao salvar entrega. Tente novamente.');
-    document.getElementById('btn-confirmar-entrega').disabled = false;
-    document.getElementById('btn-confirmar-entrega').textContent = '✅ Confirmar entrega';
+  } catch(e){
+    alert('Erro ao salvar: '+e.message);
+    btn.disabled=false;btn.textContent='✅ Confirmar entrega';
   }
 }
 
-// ===== GESTOR =====
-function entrarGestor() {
-  if (document.getElementById('senha-gestor').value === SENHA_GESTOR) {
-    document.getElementById('erro-senha').style.display = 'none';
-    go('screen-dono');
-    carregarPedidosGestor();
-    carregarSelectNovoPedido();
-  } else {
-    document.getElementById('erro-senha').style.display = 'block';
-  }
-}
-
-async function carregarPedidosGestor() {
-  const container = document.getElementById('lista-pedidos-gestor');
-  const hoje = new Date().toISOString().split('T')[0];
-  const { data } = await db.from('pedidos').select('*, clientes(nome)').gte('data_entrega', hoje).order('created_at',{ascending:false});
-  if (!data || data.length === 0) { container.innerHTML = '<p style="color:#888;text-align:center;padding:20px;">Nenhum pedido.</p>'; return; }
-
-  const htmls = await Promise.all(data.map(async p => {
-    const { data: itens } = await db.from('itens_pedido').select('*').eq('pedido_id', p.id);
-    const total = itens?.length || 0;
-    const comprados = itens?.filter(i=>i.comprado).length || 0;
-    const pct = total > 0 ? Math.round((comprados/total)*100) : 0;
-    const badgeMap = {'pendente':['Aguardando','badge-pending'],'entregue':['Entregue','badge-ok'],'incompleto':['Incompleto','badge-partial']};
-    const [label,cls] = badgeMap[p.status] || (pct>0&&pct<100?['Comprando','badge-buying']:badgeMap['pendente']);
-    return `<div class="card" onclick="verDetalhePedidoGestor('${p.id}')" style="cursor:pointer;">
+// ===== GESTOR: PEDIDOS =====
+async function carregarPedidosGestor(){
+  const c=document.getElementById('lista-pedidos-gestor');
+  const hoje=new Date().toISOString().split('T')[0];
+  const {data} = await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).order('created_at',{ascending:false});
+  if(!data||!data.length){c.innerHTML='<p style="color:#888;text-align:center;padding:20px;">Nenhum pedido.</p>';return;}
+  const htmls = await Promise.all(data.map(async p=>{
+    const {data:itens} = await db.from('itens_pedido').select('comprado').eq('pedido_id',p.id);
+    const total=itens?.length||0,comp=itens?.filter(i=>i.comprado).length||0;
+    const pct=total>0?Math.round(comp/total*100):0;
+    const badgeMap={'pendente':['Aguardando','badge-pending'],'entregue':['Entregue ✅','badge-ok'],'incompleto':['Incompleto','badge-partial']};
+    const [lbl,cls]=pct>0&&pct<100&&p.status!=='entregue'?['Comprando','badge-buying']:(badgeMap[p.status]||badgeMap['pendente']);
+    return `<div class="card" onclick="verDetalheGestor('${p.id}')" style="cursor:pointer;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
         <div class="card-title">${p.clientes?.nome||'Cliente'}</div>
-        <span class="badge ${cls}">${label}</span>
+        <span class="badge ${cls}">${lbl}</span>
       </div>
       <div class="progresso-bar"><div class="progresso-fill" style="width:${pct}%;"></div></div>
-      <div class="progresso-label">${comprados}/${total} itens comprados</div>
+      <div style="font-size:11px;color:#888;margin-top:3px;">${comp}/${total} itens comprados</div>
     </div>`;
   }));
-
-  const incompletos = data.filter(p=>p.status==='incompleto').length;
-  document.getElementById('alertas-gestor').innerHTML = incompletos>0
-    ? `<div class="alert-box">⚠️ ${incompletos} entrega${incompletos>1?'s':''} com problema</div>` : '';
-  container.innerHTML = htmls.join('');
+  document.getElementById('alertas-gestor').innerHTML='';
+  c.innerHTML=htmls.join('');
 }
 
-async function verDetalhePedidoGestor(pedidoId) {
-  const { data: p } = await db.from('pedidos').select('*, clientes(nome)').eq('id', pedidoId).single();
-  const { data: itens } = await db.from('itens_pedido').select('*, funcionarios(nome)').eq('pedido_id', pedidoId);
-  const { data: compras } = await db.from('compras').select('*, funcionarios(nome)').eq('pedido_id', pedidoId);
+async function verDetalheGestor(pid){
+  isGestor=true;
+  const {data:p} = await db.from('pedidos').select('*,clientes(nome)').eq('id',pid).single();
+  const {data:itens} = await db.from('itens_pedido').select('*,funcionarios(nome)').eq('pedido_id',pid);
+  const {data:compras} = await db.from('compras').select('*,funcionarios(nome)').eq('pedido_id',pid);
+  pedidoAberto={...p,itens:itens||[]};
+  document.getElementById('gestor-detalhe-titulo').textContent=p.clientes?.nome||'Pedido';
 
-  document.getElementById('gestor-detalhe-titulo').textContent = p.clientes?.nome || 'Pedido';
-  const total = itens?.length || 0;
-  const comprados = itens?.filter(i=>i.comprado).length || 0;
-  const pct = total > 0 ? Math.round((comprados/total)*100) : 0;
-
-  const itensHtml = itens?.map(item => `
+  const total=itens?.length||0,comp=itens?.filter(i=>i.comprado).length||0;
+  const pct=total>0?Math.round(comp/total*100):0;
+  const itensHtml=itens?.map(item=>`
     <div class="item-pedido-row">
-      <div class="item-status-icon">${item.comprado ? '✅' : '🔲'}</div>
+      <div class="item-status-icon">${item.comprado?'✅':'🔲'}</div>
       <div class="item-info">
         <div class="item-info-nome">${item.nome}</div>
-        <div class="item-info-sub">${item.comprado ? `Comprado por ${item.funcionarios?.nome||'—'}` : 'Aguardando'}</div>
+        <div class="item-info-sub">${item.comprado?`Comprado por ${item.funcionarios?.nome||'—'}`:'Aguardando'}</div>
       </div>
-      <div class="item-qty-badge">${item.quantidade} ${item.unidade||''}</div>
-    </div>`).join('') || '';
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
+        ${item.comprado?`<button class="btn-desfazer" onclick="desfazerItem('${item.id}')">↩ Desfazer</button>`:''}
+      </div>
+    </div>`).join('')||'';
 
-  const comprasHtml = compras?.length > 0 ? compras.map(c => `
+  const comprasHtml=compras?.length>0?compras.map(c=>`
     <div class="card" style="margin-bottom:8px;">
       <div style="display:flex;justify-content:space-between;">
         <div class="card-title">${c.funcionarios?.nome||'—'}</div>
-        <span style="font-weight:500;">R$ ${parseFloat(c.valor_pago||0).toFixed(2)}</span>
+        <span style="font-weight:500;color:#1D9E75;">R$ ${parseFloat(c.valor_pago||0).toFixed(2)}</span>
       </div>
-      <div class="card-sub">${c.fornecedor||'—'}</div>
-    </div>`).join('') : '<p style="color:#888;font-size:13px;">Nenhuma compra registrada ainda.</p>';
+      <div class="card-sub">${c.fornecedor||'—'} • ${new Date(c.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</div>
+    </div>`).join(''):'<p style="color:#888;font-size:13px;">Nenhuma compra ainda.</p>';
 
-  const fotoHtml = p.foto_url
-    ? `<img src="${p.foto_url}" style="width:100%;border-radius:12px;margin-top:8px;" />`
-    : `<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">Aguardando foto de entrega</div>`;
+  const fotoHtml=p.foto_url
+    ?`<img src="${p.foto_url}" style="width:100%;border-radius:12px;margin-top:8px;"/>`
+    :`<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto</div>`;
 
-  document.getElementById('gestor-detalhe-conteudo').innerHTML = `
+  document.getElementById('gestor-detalhe-conteudo').innerHTML=`
     <div style="margin-bottom:1rem;">
       <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
         <span style="font-size:13px;font-weight:500;">Progresso</span>
-        <span style="font-size:13px;font-weight:600;">${comprados}/${total} itens</span>
+        <span style="font-size:13px;font-weight:600;color:${pct===100?'#166534':'#1e40af'};">${comp}/${total} itens</span>
       </div>
-      <div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:${pct}%;"></div></div>
+      <div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:${pct}%;background:${pct===100?'#1D9E75':'#1e40af'};"></div></div>
     </div>
-    <p class="section-title">Itens</p>
+    <p class="section-title">Itens do pedido</p>
     <div class="card" style="padding:0.5rem 1rem;">${itensHtml}</div>
     <p class="section-title" style="margin-top:1rem;">Compras registradas</p>
     ${comprasHtml}
     <p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>
     ${fotoHtml}
-    ${p.observacao ? `<div class="info-box" style="margin-top:8px;">Obs: ${p.observacao}</div>` : ''}`;
-  go('screen-pedido-detalhe-gestor');
+    ${p.observacao?`<div class="info-box" style="margin-top:8px;">📝 ${p.observacao}</div>`:''}`;
+  go('screen-detalhe-gestor');
 }
 
-async function carregarEquipe() {
-  const { data: funcs } = await db.from('funcionarios').select('*').order('nome');
-  const { data: compras } = await db.from('compras').select('*, funcionarios(nome)');
-  const container = document.getElementById('lista-func-gestor');
-  if (!funcs) { container.innerHTML = '<p style="color:#888;">Nenhum funcionário.</p>'; return; }
-  container.innerHTML = funcs.map(f => {
-    const minhasCompras = (compras||[]).filter(c=>c.funcionario_id===f.id);
-    const totalGasto = minhasCompras.reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
+// ===== EQUIPE =====
+async function carregarEquipe(){
+  const {data:funcs}=await db.from('funcionarios').select('*').order('nome');
+  const {data:compras}=await db.from('compras').select('*');
+  const c=document.getElementById('lista-equipe');
+  if(!funcs){c.innerHTML='<p style="color:#888;">Nenhum funcionário.</p>';return;}
+  c.innerHTML=funcs.map(f=>{
+    const mc=(compras||[]).filter(c=>c.funcionario_id===f.id);
+    const total=mc.reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
     return `<div class="card">
       <div class="card-title">${f.nome}</div>
-      <div class="card-sub">${minhasCompras.length} compras registradas • R$ ${totalGasto.toFixed(2)} gastos</div>
+      <div class="card-sub">${mc.length} compras • R$ ${total.toFixed(2)} gastos</div>
     </div>`;
   }).join('');
 }
 
-async function carregarResumo() {
-  const { data: pedidos } = await db.from('pedidos').select('*');
-  const { data: compras } = await db.from('compras').select('*');
-  const hoje = new Date().toISOString().split('T')[0];
-  const pedidosHoje = (pedidos||[]).filter(p=>p.data_entrega===hoje);
-  const gastoTotal = (compras||[]).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
-  const gastoHoje = (compras||[]).filter(c=>c.created_at?.startsWith(hoje)).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
-  document.getElementById('resumo-hoje').innerHTML = `
-    <div class="metric"><div class="metric-label">Pedidos hoje</div><div class="metric-value">${pedidosHoje.length}</div></div>
-    <div class="metric"><div class="metric-label">Gasto hoje</div><div class="metric-value">R$${gastoHoje.toFixed(0)}</div></div>`;
-  document.getElementById('resumo-mes').innerHTML = `
+// ===== RESUMO =====
+async function carregarResumo(){
+  const {data:pedidos}=await db.from('pedidos').select('*');
+  const {data:compras}=await db.from('compras').select('*');
+  const hoje=new Date().toISOString().split('T')[0];
+  const ph=(pedidos||[]).filter(p=>p.data_entrega===hoje);
+  const gh=(compras||[]).filter(c=>c.created_at?.startsWith(hoje)).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
+  const gt=(compras||[]).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
+  document.getElementById('resumo-hoje').innerHTML=`
+    <div class="metric"><div class="metric-label">Pedidos hoje</div><div class="metric-value">${ph.length}</div></div>
+    <div class="metric"><div class="metric-label">Gasto hoje</div><div class="metric-value">R$${gh.toFixed(0)}</div></div>`;
+  document.getElementById('resumo-geral').innerHTML=`
     <div class="metric"><div class="metric-label">Total pedidos</div><div class="metric-value">${(pedidos||[]).length}</div></div>
-    <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$${gastoTotal.toFixed(0)}</div></div>`;
+    <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$${gt.toFixed(0)}</div></div>`;
 }
 
-async function carregarConfig() {
-  const { data } = await db.from('fornecedores').select('*').order('nome');
-  const c = document.getElementById('lista-forn-config');
-  c.innerHTML = (data||[]).map(f=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid #f0f0ea;"><span style="font-size:14px;">${f.nome}</span><span class="badge badge-ok">Ativo</span></div>`).join('');
+// ===== CONFIG =====
+async function carregarConfig(){
+  await renderConfig('clientes','lista-clientes-config');
+  await renderConfig('funcionarios','lista-func-config');
+  await renderConfig('fornecedores','lista-forn-config');
 }
 
-async function cadastrarCliente() {
-  const nome = document.getElementById('novo-cliente-nome').value.trim();
-  if (!nome) return alert('Digite o nome.');
-  await db.from('clientes').insert({nome});
-  document.getElementById('novo-cliente-nome').value='';
-  mostrarNotif('✅ Cliente cadastrado!', nome);
-}
-async function cadastrarFuncionario() {
-  const nome = document.getElementById('novo-func-nome').value.trim();
-  if (!nome) return alert('Digite o nome.');
-  await db.from('funcionarios').insert({nome});
-  document.getElementById('novo-func-nome').value='';
-  mostrarNotif('✅ Funcionário cadastrado!', nome);
-  await init();
-}
-async function cadastrarFornecedor() {
-  const nome = document.getElementById('novo-forn-nome').value.trim();
-  if (!nome) return alert('Digite o nome.');
-  await db.from('fornecedores').insert({nome});
-  document.getElementById('novo-forn-nome').value='';
-  await carregarConfig();
-  mostrarNotif('✅ Fornecedor cadastrado!', nome);
+async function renderConfig(tabela, containerId){
+  const {data}=await db.from(tabela).select('*').order('nome');
+  const c=document.getElementById(containerId);
+  if(!data||!data.length){c.innerHTML='<p style="color:#888;font-size:13px;padding:8px 0;">Nenhum cadastrado ainda.</p>';return;}
+  c.innerHTML=data.map(r=>`
+    <div class="config-item">
+      <span class="config-item-nome">${r.nome}</span>
+      <button class="btn-excluir" onclick="excluir('${tabela}','${r.id}','${containerId}')">✕ Remover</button>
+    </div>`).join('');
 }
 
-async function carregarSelectNovoPedido() {
-  const { data: clientes } = await db.from('clientes').select('*').order('nome');
-  document.getElementById('select-cliente').innerHTML = (clientes||[]).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
-  document.getElementById('data-entrega').value = new Date().toISOString().split('T')[0];
+async function cadastrar(tabela, inputId, containerId){
+  const input=document.getElementById(inputId);
+  const nome=input.value.trim();
+  if(!nome){alert('Digite um nome.');return;}
+  const {error}=await db.from(tabela).insert({nome});
+  if(error){alert('Erro: '+error.message);return;}
+  input.value='';
+  await renderConfig(tabela,containerId);
+  if(tabela==='funcionarios') await carregarListaFuncs();
+  notif('✅ Cadastrado!',`"${nome}" adicionado com sucesso.`);
 }
 
-function addItemNovoPedido() {
-  const c = document.getElementById('itens-novo-pedido');
-  const row = document.createElement('div');
-  row.style.cssText='display:flex;gap:8px;margin-bottom:8px;';
-  row.innerHTML='<input type="text" placeholder="Item" style="flex:1;"><input type="text" placeholder="Qtd" style="width:65px;"><input type="text" placeholder="Un" style="width:55px;">';
-  c.appendChild(row);
+async function excluir(tabela, id, containerId){
+  if(!confirm('Remover este item?')) return;
+  const {error}=await db.from(tabela).delete().eq('id',id);
+  if(error){alert('Erro: '+error.message);return;}
+  await renderConfig(tabela,containerId);
+  if(tabela==='funcionarios') await carregarListaFuncs();
+  notif('🗑️ Removido','Item removido com sucesso.');
 }
 
-async function salvarNovoPedido() {
-  const clienteId = document.getElementById('select-cliente').value;
-  const data = document.getElementById('data-entrega').value;
-  if (!clienteId || !data) return alert('Preencha todos os campos.');
-  const { data: pedido, error } = await db.from('pedidos').insert({
-    cliente_id: clienteId, data_entrega: data, status: 'pendente'
+// ===== NOVO PEDIDO =====
+async function irNovoPedido(){
+  const {data:clientes}=await db.from('clientes').select('*').order('nome');
+  document.getElementById('select-cliente').innerHTML=(clientes||[]).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  document.getElementById('data-entrega').value=new Date().toISOString().split('T')[0];
+  document.getElementById('itens-novo-pedido').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:8px;">
+    <input type="text" placeholder="Item" style="flex:1;">
+    <input type="text" placeholder="Qtd" style="width:65px;">
+    <input type="text" placeholder="Un" style="width:55px;">
+  </div>`;
+  go('screen-novo-pedido');
+}
+
+function addItemRow(){
+  const c=document.getElementById('itens-novo-pedido');
+  const d=document.createElement('div');
+  d.style='display:flex;gap:8px;margin-bottom:8px;';
+  d.innerHTML='<input type="text" placeholder="Item" style="flex:1;"><input type="text" placeholder="Qtd" style="width:65px;"><input type="text" placeholder="Un" style="width:55px;">';
+  c.appendChild(d);
+}
+
+async function salvarPedido(){
+  const cid=document.getElementById('select-cliente').value;
+  const data=document.getElementById('data-entrega').value;
+  if(!cid){alert('Selecione um cliente.');return;}
+  if(!data){alert('Selecione a data.');return;}
+  const {data:p,error}=await db.from('pedidos').insert({
+    cliente_id:cid,data_entrega:data,status:'pendente'
   }).select().single();
-  if (error || !pedido) return alert('Erro ao salvar pedido: ' + (error?.message||''));
-  const rows = document.querySelectorAll('#itens-novo-pedido > div');
-  const itens = [];
-  rows.forEach(row => {
-    const ins = row.querySelectorAll('input');
-    const nome = ins[0]?.value.trim();
-    if (nome) itens.push({ pedido_id: pedido.id, nome, quantidade: ins[1]?.value||'1', unidade: ins[2]?.value||'un' });
+  if(error||!p){alert('Erro ao salvar pedido: '+(error?.message||''));return;}
+  const rows=document.querySelectorAll('#itens-novo-pedido > div');
+  const itens=[];
+  rows.forEach(r=>{
+    const ins=r.querySelectorAll('input');
+    const nome=ins[0]?.value.trim();
+    if(nome) itens.push({pedido_id:p.id,nome,quantidade:ins[1]?.value||'1',unidade:ins[2]?.value||'un'});
   });
-  if (itens.length > 0) await db.from('itens_pedido').insert(itens);
-  mostrarNotif('✅ Pedido criado!', `Pedido para ${document.getElementById('select-cliente').options[document.getElementById('select-cliente').selectedIndex].text} salvo.`);
+  if(itens.length>0) await db.from('itens_pedido').insert(itens);
+  notif('✅ Pedido criado!','Pedido salvo com sucesso.');
   go('screen-dono');
   carregarPedidosGestor();
 }
