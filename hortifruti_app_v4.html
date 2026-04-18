@@ -310,7 +310,7 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 <script>
 const SURL = 'https://zeufytdcyafyejadkkhq.supabase.co';
 const SKEY = 'sb_publishable_M47aF2iDpf4YhSHRVe19MA_ex-3zEiU';
-const AKEY = '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';
+const FUNC_URL = 'https://zeufytdcyafyejadkkhq.supabase.co/functions/v1/ler-pedido';
 const { createClient } = supabase;
 const db = createClient(SURL, SKEY);
 const SENHA = '1234';
@@ -361,7 +361,7 @@ async function lerTextoComIA() {
   document.getElementById('ia-loading').style.display='block';
   document.getElementById('ia-texto-area').style.display='none';
   try {
-    const itens = await chamarIA(`Você é um assistente que lê pedidos de hortifruti. Leia o texto abaixo e extraia os itens com quantidade e unidade. Responda SOMENTE com um JSON array no formato: [{"nome":"tomate","quantidade":"10","unidade":"kg"}]. Nada mais além do JSON.\n\nTexto do pedido:\n${texto}`);
+    const itens = await chamarIA(texto);
     preencherItensIA(itens);
   } catch(e) {
     alert('Erro ao ler com IA: '+e.message);
@@ -398,7 +398,7 @@ async function chamarIA(prompt) {
       'Content-Type': 'application/json',
       'x-api-key': AKEY,
       'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+      
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
@@ -420,7 +420,7 @@ async function chamarIAComFoto(base64, mediaType) {
       'Content-Type': 'application/json',
       'x-api-key': AKEY,
       'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
+      
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
