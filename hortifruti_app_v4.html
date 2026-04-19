@@ -391,70 +391,28 @@ function fileToBase64(file) {
   });
 }
 
-async function chamarIA(prompt) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+async function chamarIA(texto) {
+  const resp = await fetch(FUNC_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'anthropic-version': '2023-06-01',
-      
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
-      messages: [{ role: 'user', content: prompt }]
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ texto })
   });
   const data = await resp.json();
-  if(data.error) throw new Error(data.error.message);
-  const texto = data.content[0].text.trim();
-  const json = texto.replace(/```json|```/g,'').trim();
-  return JSON.parse(json);
+  if(data.error) throw new Error(data.error);
+  return data.itens;
 }
 
 async function chamarIAComFoto(base64, mediaType) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch(FUNC_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'anthropic-version': '2023-06-01',
-      
-    },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1000,
-      messages: [{
-        role: 'user',
-        content: [
-          { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
-          { type: 'text', text: 'Você é um assistente que lê pedidos de hortifruti. Leia a imagem e extraia os itens com quantidade e unidade. Responda SOMENTE com um JSON array no formato: [{"nome":"tomate","quantidade":"10","unidade":"kg"}]. Nada mais além do JSON.' }
-        ]
-      }]
-    })
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ imagemBase64: base64, mediaType })
   });
   const data = await resp.json();
-  if(data.error) throw new Error(data.error.message);
-  const texto = data.content[0].text.trim();
-  const json = texto.replace(/```json|```/g,'').trim();
-  return JSON.parse(json);
+  if(data.error) throw new Error(data.error);
+  return data.itens;
 }
 
-function preencherItensIA(itens) {
-  if(!itens||!itens.length){ alert('A IA não encontrou itens. Adicione manualmente.'); return; }
-  const c = document.getElementById('itens-novo-pedido');
-  c.innerHTML = '';
-  itens.forEach(item => {
-    const d = document.createElement('div');
-    d.className = 'item-ia-row';
-    d.innerHTML = `
-      <input type="text" value="${item.nome||''}" placeholder="Item" style="flex:1;">
-      <input type="text" value="${item.quantidade||''}" placeholder="Qtd" style="width:65px;">
-      <input type="text" value="${item.unidade||'un'}" placeholder="Un" style="width:55px;">
-      <button class="item-ia-remover" onclick="this.parentElement.remove()">✕</button>`;
-    c.appendChild(d);
-  });
-  notif('🤖 IA identificou '+itens.length+' itens!','Confira os itens abaixo e ajuste se necessário.');
-}
 
 // ===== INIT =====
 async function init() { await carregarListaFuncs(); }
