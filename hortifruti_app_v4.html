@@ -285,9 +285,9 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
         📋 Colar texto do pedido
       </button>
       <button class="btn-ia" id="btn-foto-ia" style="display:none;" onclick="document.getElementById('ia-foto-input').click()">
-        📷 Enviar foto do pedido
+        📎 Enviar foto ou PDF do pedido
       </button>
-      <input type="file" id="ia-foto-input" accept="image/*" style="display:none;" onchange="lerFotoComIA(this)">
+      <input type="file" id="ia-foto-input" accept="image/*,application/pdf" style="display:none;" onchange="lerArquivoComIA(this)">
       <div id="ia-texto-area" style="display:none;">
         <textarea id="ia-texto" rows="5" placeholder="Cole aqui o texto do pedido. Ex: 10kg tomate, 20 alfaces, 5kg cenoura, 3 caixas laranja..." style="margin-bottom:8px;"></textarea>
         <button class="btn-ia" onclick="lerTextoComIA()">🤖 Ler pedido com IA</button>
@@ -369,15 +369,24 @@ async function lerTextoComIA() {
   document.getElementById('ia-loading').style.display='none';
 }
 
-async function lerFotoComIA(input) {
+async function lerArquivoComIA(input) {
   if(!input.files||!input.files[0]) return;
+  const file = input.files[0];
   document.getElementById('ia-loading').style.display='block';
+  document.getElementById('ia-texto-area').style.display='none';
   try {
-    const base64 = await fileToBase64(input.files[0]);
-    const itens = await chamarIAComFoto(base64, input.files[0].type);
-    preencherItensIA(itens);
+    if(file.type === 'application/pdf') {
+      // Para PDF, extrair texto primeiro
+      const base64 = await fileToBase64(file);
+      const itens = await chamarIAComFoto(base64, 'application/pdf');
+      preencherItensIA(itens);
+    } else {
+      const base64 = await fileToBase64(file);
+      const itens = await chamarIAComFoto(base64, file.type);
+      preencherItensIA(itens);
+    }
   } catch(e) {
-    alert('Erro ao ler foto com IA: '+e.message);
+    alert('Erro ao ler arquivo com IA: '+e.message);
   }
   document.getElementById('ia-loading').style.display='none';
 }
