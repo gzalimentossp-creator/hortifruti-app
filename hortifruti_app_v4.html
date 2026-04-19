@@ -32,7 +32,6 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .btn-primary { width: 100%; padding: 12px; background: #dbeafe; color: #1e40af; border: none; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 8px; }
 .btn-green { width: 100%; padding: 14px; background: #1D9E75; color: #fff; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
 .btn-green:disabled { background: #ccc; cursor: not-allowed; }
-.btn-red { width: 100%; padding: 10px; background: #fde8e8; color: #991b1b; border: none; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 6px; }
 .btn-outline { width: 100%; padding: 10px; background: transparent; color: #333; border: 0.5px solid #ccc; border-radius: 8px; font-size: 14px; cursor: pointer; margin-top: 8px; }
 .btn-ia { width: 100%; padding: 14px; background: #f0f4ff; color: #1e40af; border: 1px solid #bfcfff; border-radius: 12px; font-size: 15px; font-weight: 500; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
 .form-group { margin-bottom: 14px; }
@@ -79,22 +78,17 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
 .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 0.5px solid #f0f0ea; }
 .config-item:last-child { border-bottom: none; }
 .btn-excluir { padding: 4px 10px; background: #fde8e8; color: #991b1b; border: none; border-radius: 6px; font-size: 11px; cursor: pointer; }
-
-/* IA */
 .ia-loading { text-align: center; padding: 24px; background: #f0f4ff; border-radius: 12px; margin: 12px 0; }
 .ia-loading-icon { font-size: 32px; margin-bottom: 8px; animation: spin 1.5s linear infinite; display: block; }
 .item-ia-row { display: flex; align-items: center; gap: 8px; padding: 10px 0; border-bottom: 0.5px solid #f0f0ea; }
 .item-ia-row:last-child { border-bottom: none; }
 .item-ia-row input { padding: 6px 10px; font-size: 13px; }
 .item-ia-remover { background: none; border: none; color: #991b1b; font-size: 18px; cursor: pointer; flex-shrink: 0; }
-.upload-area { border: 2px dashed #bfcfff; border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: #f0f4ff; margin-bottom: 10px; }
-.upload-area:hover { background: #e8eeff; }
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- NOTIFICAÇÃO -->
   <div class="notif-overlay" id="notif-overlay">
     <div class="notif-card">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
@@ -108,7 +102,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- MODAL COMPRA -->
   <div class="modal-overlay" id="modal-compra">
     <div class="modal-box">
       <div class="modal-titulo" id="modal-item-nome">Registrar item</div>
@@ -126,7 +119,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- MODAL ENTREGA -->
   <div class="modal-overlay" id="modal-entrega">
     <div class="modal-box">
       <div class="modal-titulo">Registrar entrega</div>
@@ -150,7 +142,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- LOGIN -->
   <div class="screen active" id="screen-login">
     <div style="text-align:center;padding:1.5rem 0 1rem;">
       <div style="font-size:40px;margin-bottom:8px;">🥬</div>
@@ -171,7 +162,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- FUNCIONÁRIO: PEDIDOS -->
   <div class="screen" id="screen-func-pedidos">
     <div class="header">
       <button class="back-btn" onclick="go('screen-login')">←</button>
@@ -181,7 +171,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     <div id="lista-pedidos-func"><div class="loading"><span class="spinner">⏳</span><br>Carregando...</div></div>
   </div>
 
-  <!-- FUNCIONÁRIO: DETALHE PEDIDO -->
   <div class="screen" id="screen-func-pedido-detalhe">
     <div class="header">
       <button class="back-btn" onclick="voltarPedidos()">←</button>
@@ -197,7 +186,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- CONCLUSÃO -->
   <div class="screen" id="screen-concluido">
     <div style="text-align:center;padding:3rem 1rem;">
       <div style="font-size:64px;margin-bottom:16px;">🎉</div>
@@ -207,7 +195,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- PAINEL GESTOR -->
   <div class="screen" id="screen-dono">
     <div class="header">
       <button class="back-btn" onclick="go('screen-login')">←</button>
@@ -259,13 +246,11 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
-  <!-- DETALHE PEDIDO GESTOR -->
   <div class="screen" id="screen-detalhe-gestor">
     <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2 id="gestor-detalhe-titulo" style="font-size:16px;">Pedido</h2></div>
     <div id="gestor-detalhe-conteudo"></div>
   </div>
 
-  <!-- NOVO PEDIDO COM IA -->
   <div class="screen" id="screen-novo-pedido">
     <div class="header"><button class="back-btn" onclick="go('screen-dono')">←</button><h2>Novo pedido</h2></div>
     <div class="form-group">
@@ -278,18 +263,16 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
     <hr class="divider">
     <p class="section-title">Itens do pedido <span style="background:#dbeafe;color:#1e40af;font-size:10px;padding:2px 7px;border-radius:6px;margin-left:4px;">IA</span></p>
-
-    <!-- ÁREA IA -->
     <div style="margin-bottom:12px;">
-      <button class="btn-ia" onclick="document.getElementById('ia-texto-area').style.display='block';this.style.display='none';document.getElementById('btn-foto-ia').style.display='flex';">
+      <button class="btn-ia" id="btn-colar-texto" onclick="document.getElementById('ia-texto-area').style.display='block';document.getElementById('btn-colar-texto').style.display='none';document.getElementById('btn-enviar-arquivo').style.display='flex';">
         📋 Colar texto do pedido
       </button>
-      <button class="btn-ia" id="btn-foto-ia" style="display:none;" onclick="document.getElementById('ia-foto-input').click()">
+      <button class="btn-ia" id="btn-enviar-arquivo" style="display:none;" onclick="document.getElementById('ia-arquivo-input').click()">
         📎 Enviar foto ou PDF do pedido
       </button>
-      <input type="file" id="ia-foto-input" accept="image/*,application/pdf" style="display:none;" onchange="lerArquivoComIA(this)">
+      <input type="file" id="ia-arquivo-input" accept="image/*,application/pdf" style="display:none;" onchange="lerArquivoComIA(this)">
       <div id="ia-texto-area" style="display:none;">
-        <textarea id="ia-texto" rows="5" placeholder="Cole aqui o texto do pedido. Ex: 10kg tomate, 20 alfaces, 5kg cenoura, 3 caixas laranja..." style="margin-bottom:8px;"></textarea>
+        <textarea id="ia-texto" rows="5" placeholder="Cole aqui o texto do pedido..." style="margin-bottom:8px;"></textarea>
         <button class="btn-ia" onclick="lerTextoComIA()">🤖 Ler pedido com IA</button>
       </div>
       <div id="ia-loading" style="display:none;" class="ia-loading">
@@ -298,7 +281,6 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
         <div style="font-size:12px;color:#888;margin-top:4px;">Identificando itens e quantidades</div>
       </div>
     </div>
-
     <p style="font-size:12px;color:#999;text-align:center;margin-bottom:10px;">— ou adicione manualmente —</p>
     <div id="itens-novo-pedido"></div>
     <button class="btn-outline" onclick="addItemRow()">+ Adicionar item</button>
@@ -364,31 +346,23 @@ async function lerTextoComIA() {
     const itens = await chamarIA(texto);
     preencherItensIA(itens);
   } catch(e) {
+    document.getElementById('ia-loading').style.display='none';
     alert('Erro ao ler com IA: '+e.message);
   }
-  document.getElementById('ia-loading').style.display='none';
 }
 
 async function lerArquivoComIA(input) {
   if(!input.files||!input.files[0]) return;
   const file = input.files[0];
   document.getElementById('ia-loading').style.display='block';
-  document.getElementById('ia-texto-area').style.display='none';
   try {
-    if(file.type === 'application/pdf') {
-      // Para PDF, extrair texto primeiro
-      const base64 = await fileToBase64(file);
-      const itens = await chamarIAComFoto(base64, 'application/pdf');
-      preencherItensIA(itens);
-    } else {
-      const base64 = await fileToBase64(file);
-      const itens = await chamarIAComFoto(base64, file.type);
-      preencherItensIA(itens);
-    }
+    const base64 = await fileToBase64(file);
+    const itens = await chamarIAComFoto(base64, file.type);
+    preencherItensIA(itens);
   } catch(e) {
+    document.getElementById('ia-loading').style.display='none';
     alert('Erro ao ler arquivo com IA: '+e.message);
   }
-  document.getElementById('ia-loading').style.display='none';
 }
 
 function fileToBase64(file) {
@@ -404,7 +378,7 @@ async function chamarIA(texto) {
   const resp = await fetch(FUNC_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ texto })
+    body: JSON.stringify({ texto: texto })
   });
   const data = await resp.json();
   if(data.error) throw new Error(data.error);
@@ -415,30 +389,30 @@ async function chamarIAComFoto(base64, mediaType) {
   const resp = await fetch(FUNC_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ imagemBase64: base64, mediaType })
+    body: JSON.stringify({ imagemBase64: base64, mediaType: mediaType })
   });
   const data = await resp.json();
   if(data.error) throw new Error(data.error);
   return data.itens;
 }
 
-
-
 function preencherItensIA(itens) {
+  document.getElementById('ia-loading').style.display='none';
   if(!itens||!itens.length){ alert('A IA não encontrou itens. Adicione manualmente.'); return; }
   const c = document.getElementById('itens-novo-pedido');
   c.innerHTML = '';
-  itens.forEach(item => {
+  itens.forEach(function(item) {
     const d = document.createElement('div');
     d.className = 'item-ia-row';
-    d.innerHTML = `
-      <input type="text" value="${item.nome||''}" placeholder="Item" style="flex:1;">
-      <input type="text" value="${item.quantidade||''}" placeholder="Qtd" style="width:65px;">
-      <input type="text" value="${item.unidade||'un'}" placeholder="Un" style="width:55px;">
-      <button class="item-ia-remover" onclick="this.parentElement.remove()">✕</button>`;
+    const nome = (item.nome||'').replace(/"/g,'');
+    const qtd = (item.quantidade||'').replace(/"/g,'');
+    const un = (item.unidade||'un').replace(/"/g,'');
+    d.innerHTML = '<input type="text" value="'+nome+'" placeholder="Item" style="flex:1;">'
+      + '<input type="text" value="'+qtd+'" placeholder="Qtd" style="width:65px;">'
+      + '<input type="text" value="'+un+'" placeholder="Un" style="width:55px;">'
+      + '<button class="item-ia-remover" onclick="this.parentElement.remove()">✕</button>';
     c.appendChild(d);
   });
-  document.getElementById('ia-loading').style.display='none';
   notif('🤖 IA identificou '+itens.length+' itens!','Confira os itens abaixo e ajuste se necessário.');
 }
 
@@ -449,19 +423,19 @@ async function carregarListaFuncs() {
   const {data} = await db.from('funcionarios').select('*').order('nome');
   const c = document.getElementById('lista-funcionarios');
   if(!data||!data.length){c.innerHTML='<p style="color:#888;text-align:center;">Nenhum funcionário cadastrado.</p>';return;}
-  c.innerHTML = data.map((f,i)=>{
-    const [bg,cor]=CORES[i%CORES.length];
-    const ini=f.nome.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-    return `<button class="func-nome-btn" onclick="entrarFunc('${f.id}','${f.nome.replace(/'/g,"\\'")}')">
-      <div class="func-avatar" style="background:${bg};color:${cor};">${ini}</div>
-      <div><div style="font-size:17px;font-weight:500;color:#1a1a18;">${f.nome}</div>
-      <div style="font-size:13px;color:#888;">Comprador / Entregador</div></div>
-    </button>`;
+  c.innerHTML = data.map(function(f,i){
+    const bg=CORES[i%CORES.length][0], cor=CORES[i%CORES.length][1];
+    const ini=f.nome.split(' ').map(function(n){return n[0];}).join('').substring(0,2).toUpperCase();
+    return '<button class="func-nome-btn" onclick="entrarFunc(\''+f.id+'\',\''+f.nome.replace(/'/g,"\\'")+'\')">'
+      +'<div class="func-avatar" style="background:'+bg+';color:'+cor+';">'+ini+'</div>'
+      +'<div><div style="font-size:17px;font-weight:500;color:#1a1a18;">'+f.nome+'</div>'
+      +'<div style="font-size:13px;color:#888;">Comprador / Entregador</div></div>'
+      +'</button>';
   }).join('');
 }
 
 async function entrarFunc(id, nome) {
-  me={id,nome}; isGestor=false;
+  me={id:id,nome:nome}; isGestor=false;
   document.getElementById('func-nome-header').textContent=nome;
   go('screen-func-pedidos');
   await carregarPedidosFunc();
@@ -487,18 +461,18 @@ async function carregarPedidosFunc() {
     c.innerHTML='<div style="text-align:center;padding:40px;color:#888;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:16px;font-weight:500;">Nenhum pedido aberto!</div></div>';
     return;
   }
-  const htmls=await Promise.all(pedidos.map(async p=>{
+  const htmls=await Promise.all(pedidos.map(async function(p){
     const {data:itens}=await db.from('itens_pedido').select('comprado').eq('pedido_id',p.id);
-    const total=itens?.length||0,comp=itens?.filter(i=>i.comprado).length||0;
+    const total=itens?itens.length:0, comp=itens?itens.filter(function(i){return i.comprado;}).length:0;
     const pct=total>0?Math.round(comp/total*100):0;
     const cor=pct===100?'#1D9E75':pct>0?'#1e40af':'#ccc';
-    const label=pct===100?'✅ Pronto para entregar':pct>0?`${comp}/${total} itens comprados`:`${total} itens aguardando`;
-    return `<div class="pedido-card" onclick="abrirPedido('${p.id}')">
-      <div style="font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:4px;">${p.clientes?.nome||'Cliente'}</div>
-      <div style="font-size:13px;color:#888;margin-bottom:8px;">${p.data_entrega||''}</div>
-      <div class="progresso-bar"><div class="progresso-fill" style="width:${pct}%;background:${cor};"></div></div>
-      <div style="font-size:11px;color:#888;margin-top:3px;">${label}</div>
-    </div>`;
+    const label=pct===100?'✅ Pronto para entregar':pct>0?(comp+'/'+total+' itens comprados'):(total+' itens aguardando');
+    return '<div class="pedido-card" onclick="abrirPedido(\''+p.id+'\')">'
+      +'<div style="font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:4px;">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>'
+      +'<div style="font-size:13px;color:#888;margin-bottom:8px;">'+(p.data_entrega||'')+'</div>'
+      +'<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;background:'+cor+';"></div></div>'
+      +'<div style="font-size:11px;color:#888;margin-top:3px;">'+label+'</div>'
+      +'</div>';
   }));
   c.innerHTML=htmls.join('');
 }
@@ -506,53 +480,51 @@ async function carregarPedidosFunc() {
 async function abrirPedido(pid) {
   const {data:p}=await db.from('pedidos').select('*,clientes(nome)').eq('id',pid).single();
   const {data:itens}=await db.from('itens_pedido').select('*,funcionarios(nome)').eq('pedido_id',pid);
-  pedidoAberto={...p,itens:itens||[]};
-  document.getElementById('func-detalhe-titulo').textContent=p.clientes?.nome||'Pedido';
+  pedidoAberto=Object.assign({},p,{itens:itens||[]});
+  document.getElementById('func-detalhe-titulo').textContent=p.clientes?p.clientes.nome:'Pedido';
   renderDetalhe();
   go('screen-func-pedido-detalhe');
 }
 
 function renderDetalhe() {
   const itens=pedidoAberto.itens||[];
-  const total=itens.length,comp=itens.filter(i=>i.comprado).length;
+  const total=itens.length, comp=itens.filter(function(i){return i.comprado;}).length;
   const pct=total>0?Math.round(comp/total*100):0;
-  document.getElementById('func-progresso-box').innerHTML=`
-    <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-      <span style="font-size:13px;font-weight:500;">Progresso</span>
-      <span style="font-size:13px;font-weight:600;color:${pct===100?'#166534':'#1e40af'};">${comp}/${total} itens</span>
-    </div>
-    <div class="progresso-bar" style="height:10px;">
-      <div class="progresso-fill" style="width:${pct}%;background:${pct===100?'#1D9E75':'#1e40af'};"></div>
-    </div>`;
-  const itensHtml=itens.map(item=>{
-    const foiEu=item.comprado_por===me?.id;
+  document.getElementById('func-progresso-box').innerHTML=
+    '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+    +'<span style="font-size:13px;font-weight:500;">Progresso</span>'
+    +'<span style="font-size:13px;font-weight:600;color:'+(pct===100?'#166534':'#1e40af')+';">'+comp+'/'+total+' itens</span>'
+    +'</div>'
+    +'<div class="progresso-bar" style="height:10px;">'
+    +'<div class="progresso-fill" style="width:'+pct+'%;background:'+(pct===100?'#1D9E75':'#1e40af')+';"></div>'
+    +'</div>';
+  const itensHtml=itens.map(function(item){
+    const foiEu=item.comprado_por===me.id;
     if(item.comprado){
-      return `<div class="item-pedido-row">
-        <div class="item-status-icon">✅</div>
-        <div class="item-info">
-          <div class="item-info-nome">${item.nome}</div>
-          <div class="item-info-sub">${foiEu?'👤 Você comprou':`👤 ${item.funcionarios?.nome||'Outro funcionário'}`}</div>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-          <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
-          ${foiEu||isGestor?`<button class="btn-desfazer" onclick="desfazerItem('${item.id}')">↩ Desfazer</button>`:''}
-        </div>
-      </div>`;
+      return '<div class="item-pedido-row">'
+        +'<div class="item-status-icon">✅</div>'
+        +'<div class="item-info">'
+        +'<div class="item-info-nome">'+item.nome+'</div>'
+        +'<div class="item-info-sub">'+(foiEu?'👤 Você comprou':'👤 '+(item.funcionarios?item.funcionarios.nome:'Outro funcionário'))+'</div>'
+        +'</div>'
+        +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
+        +'<span class="item-qty">'+item.quantidade+' '+(item.unidade||'')+'</span>'
+        +(foiEu||isGestor?'<button class="btn-desfazer" onclick="desfazerItem(\''+item.id+'\')">↩ Desfazer</button>':'')
+        +'</div></div>';
     } else {
-      return `<div class="item-pedido-row">
-        <div class="item-status-icon">🔲</div>
-        <div class="item-info">
-          <div class="item-info-nome">${item.nome}</div>
-          <div class="item-info-sub" style="color:#1e40af;">Aguardando compra</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
-          <button class="btn-pegar" onclick="abrirModalCompra('${item.id}','${item.nome.replace(/'/g,"\\'")}','${item.quantidade} ${item.unidade||''}')">Eu peguei</button>
-        </div>
-      </div>`;
+      return '<div class="item-pedido-row">'
+        +'<div class="item-status-icon">🔲</div>'
+        +'<div class="item-info">'
+        +'<div class="item-info-nome">'+item.nome+'</div>'
+        +'<div class="item-info-sub" style="color:#1e40af;">Aguardando compra</div>'
+        +'</div>'
+        +'<div style="display:flex;align-items:center;gap:6px;">'
+        +'<span class="item-qty">'+item.quantidade+' '+(item.unidade||'')+'</span>'
+        +'<button class="btn-pegar" onclick="abrirModalCompra(\''+item.id+'\',\''+item.nome.replace(/'/g,"\\'")+'\',\''+item.quantidade+' '+(item.unidade||'')+'\')">Eu peguei</button>'
+        +'</div></div>';
     }
   }).join('');
-  document.getElementById('func-itens-lista').innerHTML=`<div class="card" style="padding:0.5rem 1rem;">${itensHtml||'<p style="color:#888;text-align:center;padding:12px;">Sem itens.</p>'}</div>`;
+  document.getElementById('func-itens-lista').innerHTML='<div class="card" style="padding:0.5rem 1rem;">'+(itensHtml||'<p style="color:#888;text-align:center;padding:12px;">Sem itens.</p>')+'</div>';
   document.getElementById('btn-entrega-box').style.display=pct===100&&total>0?'block':'none';
   document.getElementById('func-instrucao').style.display=comp===total&&total>0?'none':'block';
 }
@@ -560,31 +532,32 @@ function renderDetalhe() {
 async function desfazerItem(itemId) {
   if(!confirm('Desfazer este item?')) return;
   await db.from('itens_pedido').update({comprado:false,comprado_por:null}).eq('id',itemId);
-  const item=pedidoAberto.itens.find(i=>i.id===itemId);
+  const item=pedidoAberto.itens.find(function(i){return i.id===itemId;});
   if(item){item.comprado=false;item.comprado_por=null;item.funcionarios=null;}
   renderDetalhe();
   notif('↩ Item desfeito','Voltou para aguardando compra.');
 }
 
 async function abrirModalCompra(itemId, nome, qty) {
-  itemModal={id:itemId,nome,qty};
-  document.getElementById('modal-item-nome').textContent=`"${nome}" — ${qty}`;
+  itemModal={id:itemId,nome:nome,qty:qty};
+  document.getElementById('modal-item-nome').textContent='"'+nome+'" — '+qty;
   document.getElementById('modal-valor').value='';
   document.getElementById('modal-outro-forn').style.display='none';
   document.getElementById('modal-outro-forn').value='';
   const {data:forns}=await db.from('fornecedores').select('*').order('nome');
-  const lista=(forns&&forns.length>0)?forns.map(f=>f.nome):FPADRAO;
+  const lista=(forns&&forns.length>0)?forns.map(function(f){return f.nome;}):FPADRAO;
   const icons={'CEASA':'🏪','Fornecedor A':'🏬','Mercadão Central':'🏪','Distribuidora Norte':'🚛','Feira do Produtor':'🌿'};
   document.getElementById('modal-fornecedores').innerHTML=
-    lista.map(f=>`<button class="forn-btn-grande" onclick="selForn(this,'${f}')">
-      <span style="font-size:18px;">${icons[f]||'🏪'}</span>${f}
-    </button>`).join('')+
-    `<button class="forn-btn-grande" onclick="selForn(this,'outro')"><span style="font-size:18px;">➕</span>Outro lugar</button>`;
+    lista.map(function(f){
+      return '<button class="forn-btn-grande" onclick="selForn(this,\''+f+'\')">'
+        +'<span style="font-size:18px;">'+(icons[f]||'🏪')+'</span>'+f+'</button>';
+    }).join('')
+    +'<button class="forn-btn-grande" onclick="selForn(this,\'outro\')"><span style="font-size:18px;">➕</span>Outro lugar</button>';
   document.getElementById('modal-compra').classList.add('show');
 }
 
 function selForn(btn, nome) {
-  document.querySelectorAll('#modal-fornecedores .forn-btn-grande').forEach(b=>b.classList.remove('selected'));
+  document.querySelectorAll('#modal-fornecedores .forn-btn-grande').forEach(function(b){b.classList.remove('selected');});
   btn.classList.add('selected');
   document.getElementById('modal-outro-forn').style.display=nome==='outro'?'block':'none';
 }
@@ -600,11 +573,11 @@ async function confirmarCompraItem() {
   const {error}=await db.from('itens_pedido').update({comprado:true,comprado_por:me.id}).eq('id',itemModal.id);
   if(error){alert('Erro: '+error.message);return;}
   await db.from('compras').insert({pedido_id:pedidoAberto.id,funcionario_id:me.id,fornecedor:forn,valor_pago:valor});
-  const item=pedidoAberto.itens.find(i=>i.id===itemModal.id);
+  const item=pedidoAberto.itens.find(function(i){return i.id===itemModal.id;});
   if(item){item.comprado=true;item.comprado_por=me.id;item.funcionarios={nome:me.nome};}
   fecharModal();
   renderDetalhe();
-  notif('🛒 Item registrado!',`${me.nome} comprou "${itemModal.nome}" em ${forn}.`);
+  notif('🛒 Item registrado!',me.nome+' comprou "'+itemModal.nome+'" em '+forn+'.');
 }
 
 function abrirModalEntrega(){
@@ -627,16 +600,16 @@ async function confirmarEntrega(){
   const btn=document.getElementById('btn-confirmar-entrega');
   btn.disabled=true;btn.textContent='⏳ Salvando...';
   try {
-    let fotoUrl=null;
+    var fotoUrl=null;
     if(fotoFile){
-      const arq=`entrega_${pedidoAberto.id}_${Date.now()}.jpg`;
+      const arq='entrega_'+pedidoAberto.id+'_'+Date.now()+'.jpg';
       const {data:up}=await db.storage.from('fotos').upload(arq,fotoFile);
-      if(up){const {data:ud}=db.storage.from('fotos').getPublicUrl(arq);fotoUrl=ud?.publicUrl;}
+      if(up){const {data:ud}=db.storage.from('fotos').getPublicUrl(arq);fotoUrl=ud?ud.publicUrl:null;}
     }
     await db.from('pedidos').update({status:'entregue',foto_url:fotoUrl,observacao:document.getElementById('modal-obs').value,updated_at:new Date().toISOString()}).eq('id',pedidoAberto.id);
     fecharModalEntrega();
-    document.getElementById('msg-conclusao').innerHTML=`Pedido de <strong>${pedidoAberto.clientes?.nome}</strong> entregue! ✅`;
-    notif('✅ Entrega confirmada!',`${me.nome} finalizou o pedido de ${pedidoAberto.clientes?.nome}.`);
+    document.getElementById('msg-conclusao').innerHTML='Pedido de <strong>'+(pedidoAberto.clientes?pedidoAberto.clientes.nome:'')+'</strong> entregue! ✅';
+    notif('✅ Entrega confirmada!',me.nome+' finalizou o pedido.');
     go('screen-concluido');
   } catch(e){
     alert('Erro: '+e.message);
@@ -649,20 +622,20 @@ async function carregarPedidosGestor(){
   const hoje=new Date().toISOString().split('T')[0];
   const {data}=await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).order('created_at',{ascending:false});
   if(!data||!data.length){c.innerHTML='<p style="color:#888;text-align:center;padding:20px;">Nenhum pedido.</p>';return;}
-  const htmls=await Promise.all(data.map(async p=>{
+  const htmls=await Promise.all(data.map(async function(p){
     const {data:itens}=await db.from('itens_pedido').select('comprado').eq('pedido_id',p.id);
-    const total=itens?.length||0,comp=itens?.filter(i=>i.comprado).length||0;
+    const total=itens?itens.length:0, comp=itens?itens.filter(function(i){return i.comprado;}).length:0;
     const pct=total>0?Math.round(comp/total*100):0;
-    const badgeMap={'pendente':['Aguardando','badge-pending'],'entregue':['Entregue ✅','badge-ok'],'incompleto':['Incompleto','badge-partial']};
-    const [lbl,cls]=pct>0&&pct<100&&p.status!=='entregue'?['Comprando','badge-buying']:(badgeMap[p.status]||badgeMap['pendente']);
-    return `<div class="card" onclick="verDetalheGestor('${p.id}')" style="cursor:pointer;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
-        <div class="card-title">${p.clientes?.nome||'Cliente'}</div>
-        <span class="badge ${cls}">${lbl}</span>
-      </div>
-      <div class="progresso-bar"><div class="progresso-fill" style="width:${pct}%;"></div></div>
-      <div style="font-size:11px;color:#888;margin-top:3px;">${comp}/${total} itens comprados</div>
-    </div>`;
+    const badgeMap={pendente:['Aguardando','badge-pending'],entregue:['Entregue ✅','badge-ok'],incompleto:['Incompleto','badge-partial']};
+    const info=pct>0&&pct<100&&p.status!=='entregue'?['Comprando','badge-buying']:(badgeMap[p.status]||badgeMap['pendente']);
+    return '<div class="card" onclick="verDetalheGestor(\''+p.id+'\')" style="cursor:pointer;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">'
+      +'<div class="card-title">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>'
+      +'<span class="badge '+info[1]+'">'+info[0]+'</span>'
+      +'</div>'
+      +'<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;"></div></div>'
+      +'<div style="font-size:11px;color:#888;margin-top:3px;">'+comp+'/'+total+' itens comprados</div>'
+      +'</div>';
   }));
   document.getElementById('alertas-gestor').innerHTML='';
   c.innerHTML=htmls.join('');
@@ -673,46 +646,48 @@ async function verDetalheGestor(pid){
   const {data:p}=await db.from('pedidos').select('*,clientes(nome)').eq('id',pid).single();
   const {data:itens}=await db.from('itens_pedido').select('*,funcionarios(nome)').eq('pedido_id',pid);
   const {data:compras}=await db.from('compras').select('*,funcionarios(nome)').eq('pedido_id',pid);
-  pedidoAberto={...p,itens:itens||[]};
-  document.getElementById('gestor-detalhe-titulo').textContent=p.clientes?.nome||'Pedido';
-  const total=itens?.length||0,comp=itens?.filter(i=>i.comprado).length||0;
+  pedidoAberto=Object.assign({},p,{itens:itens||[]});
+  document.getElementById('gestor-detalhe-titulo').textContent=p.clientes?p.clientes.nome:'Pedido';
+  const total=itens?itens.length:0, comp=itens?itens.filter(function(i){return i.comprado;}).length:0;
   const pct=total>0?Math.round(comp/total*100):0;
-  const itensHtml=itens?.map(item=>`
-    <div class="item-pedido-row">
-      <div class="item-status-icon">${item.comprado?'✅':'🔲'}</div>
-      <div class="item-info">
-        <div class="item-info-nome">${item.nome}</div>
-        <div class="item-info-sub">${item.comprado?`Comprado por ${item.funcionarios?.nome||'—'}`:'Aguardando'}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
-        <span class="item-qty">${item.quantidade} ${item.unidade||''}</span>
-        ${item.comprado?`<button class="btn-desfazer" onclick="desfazerItem('${item.id}')">↩ Desfazer</button>`:''}
-      </div>
-    </div>`).join('')||'';
-  const comprasHtml=compras?.length>0?compras.map(c=>`
-    <div class="card" style="margin-bottom:8px;">
-      <div style="display:flex;justify-content:space-between;">
-        <div class="card-title">${c.funcionarios?.nome||'—'}</div>
-        <span style="font-weight:500;color:#1D9E75;">R$ ${parseFloat(c.valor_pago||0).toFixed(2)}</span>
-      </div>
-      <div class="card-sub">${c.fornecedor||'—'}</div>
-    </div>`).join(''):'<p style="color:#888;font-size:13px;">Nenhuma compra ainda.</p>';
-  const fotoHtml=p.foto_url?`<img src="${p.foto_url}" style="width:100%;border-radius:12px;margin-top:8px;"/>`:`<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto</div>`;
-  document.getElementById('gestor-detalhe-conteudo').innerHTML=`
-    <div style="margin-bottom:1rem;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
-        <span style="font-size:13px;font-weight:500;">Progresso</span>
-        <span style="font-size:13px;font-weight:600;color:${pct===100?'#166534':'#1e40af'};">${comp}/${total} itens</span>
-      </div>
-      <div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:${pct}%;background:${pct===100?'#1D9E75':'#1e40af'};"></div></div>
-    </div>
-    <p class="section-title">Itens</p>
-    <div class="card" style="padding:0.5rem 1rem;">${itensHtml}</div>
-    <p class="section-title" style="margin-top:1rem;">Compras registradas</p>
-    ${comprasHtml}
-    <p class="section-title" style="margin-top:1rem;">Comprovante</p>
-    ${fotoHtml}
-    ${p.observacao?`<div class="info-box" style="margin-top:8px;">📝 ${p.observacao}</div>`:''}`;
+  const itensHtml=(itens||[]).map(function(item){
+    return '<div class="item-pedido-row">'
+      +'<div class="item-status-icon">'+(item.comprado?'✅':'🔲')+'</div>'
+      +'<div class="item-info">'
+      +'<div class="item-info-nome">'+item.nome+'</div>'
+      +'<div class="item-info-sub">'+(item.comprado?'Comprado por '+(item.funcionarios?item.funcionarios.nome:'—'):'Aguardando')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">'
+      +'<span class="item-qty">'+item.quantidade+' '+(item.unidade||'')+'</span>'
+      +(item.comprado?'<button class="btn-desfazer" onclick="desfazerItem(\''+item.id+'\')">↩ Desfazer</button>':'')
+      +'</div></div>';
+  }).join('');
+  const comprasHtml=(compras&&compras.length>0)?compras.map(function(c){
+    return '<div class="card" style="margin-bottom:8px;">'
+      +'<div style="display:flex;justify-content:space-between;">'
+      +'<div class="card-title">'+(c.funcionarios?c.funcionarios.nome:'—')+'</div>'
+      +'<span style="font-weight:500;color:#1D9E75;">R$ '+parseFloat(c.valor_pago||0).toFixed(2)+'</span>'
+      +'</div>'
+      +'<div class="card-sub">'+(c.fornecedor||'—')+'</div>'
+      +'</div>';
+  }).join(''):'<p style="color:#888;font-size:13px;">Nenhuma compra ainda.</p>';
+  const fotoHtml=p.foto_url?'<img src="'+p.foto_url+'" style="width:100%;border-radius:12px;margin-top:8px;"/>'
+    :'<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto</div>';
+  document.getElementById('gestor-detalhe-conteudo').innerHTML=
+    '<div style="margin-bottom:1rem;">'
+    +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+    +'<span style="font-size:13px;font-weight:500;">Progresso</span>'
+    +'<span style="font-size:13px;font-weight:600;color:'+(pct===100?'#166534':'#1e40af')+';">'+comp+'/'+total+' itens</span>'
+    +'</div>'
+    +'<div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:'+pct+'%;background:'+(pct===100?'#1D9E75':'#1e40af')+';"></div></div>'
+    +'</div>'
+    +'<p class="section-title">Itens</p>'
+    +'<div class="card" style="padding:0.5rem 1rem;">'+itensHtml+'</div>'
+    +'<p class="section-title" style="margin-top:1rem;">Compras registradas</p>'
+    +comprasHtml
+    +'<p class="section-title" style="margin-top:1rem;">Comprovante</p>'
+    +fotoHtml
+    +(p.observacao?'<div class="info-box" style="margin-top:8px;">📝 '+p.observacao+'</div>':'');
   go('screen-detalhe-gestor');
 }
 
@@ -721,10 +696,10 @@ async function carregarEquipe(){
   const {data:compras}=await db.from('compras').select('*');
   const c=document.getElementById('lista-equipe');
   if(!funcs){c.innerHTML='<p style="color:#888;">Nenhum funcionário.</p>';return;}
-  c.innerHTML=funcs.map(f=>{
-    const mc=(compras||[]).filter(c=>c.funcionario_id===f.id);
-    const total=mc.reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
-    return `<div class="card"><div class="card-title">${f.nome}</div><div class="card-sub">${mc.length} compras • R$ ${total.toFixed(2)} gastos</div></div>`;
+  c.innerHTML=funcs.map(function(f){
+    const mc=(compras||[]).filter(function(c){return c.funcionario_id===f.id;});
+    const total=mc.reduce(function(s,c){return s+(parseFloat(c.valor_pago)||0);},0);
+    return '<div class="card"><div class="card-title">'+f.nome+'</div><div class="card-sub">'+mc.length+' compras • R$ '+total.toFixed(2)+' gastos</div></div>';
   }).join('');
 }
 
@@ -732,15 +707,15 @@ async function carregarResumo(){
   const {data:pedidos}=await db.from('pedidos').select('*');
   const {data:compras}=await db.from('compras').select('*');
   const hoje=new Date().toISOString().split('T')[0];
-  const ph=(pedidos||[]).filter(p=>p.data_entrega===hoje);
-  const gh=(compras||[]).filter(c=>c.created_at?.startsWith(hoje)).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
-  const gt=(compras||[]).reduce((s,c)=>s+(parseFloat(c.valor_pago)||0),0);
-  document.getElementById('resumo-hoje').innerHTML=`
-    <div class="metric"><div class="metric-label">Pedidos hoje</div><div class="metric-value">${ph.length}</div></div>
-    <div class="metric"><div class="metric-label">Gasto hoje</div><div class="metric-value">R$${gh.toFixed(0)}</div></div>`;
-  document.getElementById('resumo-geral').innerHTML=`
-    <div class="metric"><div class="metric-label">Total pedidos</div><div class="metric-value">${(pedidos||[]).length}</div></div>
-    <div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$${gt.toFixed(0)}</div></div>`;
+  const ph=(pedidos||[]).filter(function(p){return p.data_entrega===hoje;});
+  const gh=(compras||[]).filter(function(c){return c.created_at&&c.created_at.startsWith(hoje);}).reduce(function(s,c){return s+(parseFloat(c.valor_pago)||0);},0);
+  const gt=(compras||[]).reduce(function(s,c){return s+(parseFloat(c.valor_pago)||0);},0);
+  document.getElementById('resumo-hoje').innerHTML=
+    '<div class="metric"><div class="metric-label">Pedidos hoje</div><div class="metric-value">'+ph.length+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Gasto hoje</div><div class="metric-value">R$'+gh.toFixed(0)+'</div></div>';
+  document.getElementById('resumo-geral').innerHTML=
+    '<div class="metric"><div class="metric-label">Total pedidos</div><div class="metric-value">'+((pedidos||[]).length)+'</div></div>'
+    +'<div class="metric"><div class="metric-label">Total gasto</div><div class="metric-value">R$'+gt.toFixed(0)+'</div></div>';
 }
 
 async function carregarConfig(){
@@ -752,18 +727,21 @@ async function renderConfig(tabela, cid){
   const {data}=await db.from(tabela).select('*').order('nome');
   const c=document.getElementById(cid);
   if(!data||!data.length){c.innerHTML='<p style="color:#888;font-size:13px;padding:8px 0;">Nenhum cadastrado ainda.</p>';return;}
-  c.innerHTML=data.map(r=>`<div class="config-item"><span style="font-size:14px;">${r.nome}</span><button class="btn-excluir" onclick="excluir('${tabela}','${r.id}','${cid}')">✕ Remover</button></div>`).join('');
+  c.innerHTML=data.map(function(r){
+    return '<div class="config-item"><span style="font-size:14px;">'+r.nome+'</span>'
+      +'<button class="btn-excluir" onclick="excluir(\''+tabela+'\',\''+r.id+'\',\''+cid+'\')">✕ Remover</button></div>';
+  }).join('');
 }
 async function cadastrar(tabela, inputId, cid){
   const input=document.getElementById(inputId);
   const nome=input.value.trim();
   if(!nome){alert('Digite um nome.');return;}
-  const {error}=await db.from(tabela).insert({nome});
+  const {error}=await db.from(tabela).insert({nome:nome});
   if(error){alert('Erro: '+error.message);return;}
   input.value='';
   await renderConfig(tabela,cid);
   if(tabela==='funcionarios') await carregarListaFuncs();
-  notif('✅ Cadastrado!',`"${nome}" adicionado.`);
+  notif('✅ Cadastrado!','"'+nome+'" adicionado.');
 }
 async function excluir(tabela, id, cid){
   if(!confirm('Remover este item?')) return;
@@ -776,12 +754,16 @@ async function excluir(tabela, id, cid){
 
 async function irNovoPedido(){
   const {data:clientes}=await db.from('clientes').select('*').order('nome');
-  document.getElementById('select-cliente').innerHTML=(clientes||[]).map(c=>`<option value="${c.id}">${c.nome}</option>`).join('');
+  document.getElementById('select-cliente').innerHTML=(clientes||[]).map(function(c){
+    return '<option value="'+c.id+'">'+c.nome+'</option>';
+  }).join('');
   document.getElementById('data-entrega').value=new Date().toISOString().split('T')[0];
   document.getElementById('itens-novo-pedido').innerHTML='';
   document.getElementById('ia-texto-area').style.display='none';
   document.getElementById('ia-loading').style.display='none';
   document.getElementById('ia-texto').value='';
+  document.getElementById('btn-colar-texto').style.display='flex';
+  document.getElementById('btn-enviar-arquivo').style.display='none';
   go('screen-novo-pedido');
 }
 
@@ -799,13 +781,13 @@ async function salvarPedido(){
   if(!cid){alert('Selecione um cliente.');return;}
   if(!data){alert('Selecione a data.');return;}
   const {data:p,error}=await db.from('pedidos').insert({cliente_id:cid,data_entrega:data,status:'pendente'}).select().single();
-  if(error||!p){alert('Erro ao salvar: '+(error?.message||''));return;}
+  if(error||!p){alert('Erro ao salvar: '+(error?error.message:''));return;}
   const rows=document.querySelectorAll('#itens-novo-pedido > div');
   const itens=[];
-  rows.forEach(r=>{
+  rows.forEach(function(r){
     const ins=r.querySelectorAll('input');
-    const nome=ins[0]?.value.trim();
-    if(nome) itens.push({pedido_id:p.id,nome,quantidade:ins[1]?.value||'1',unidade:ins[2]?.value||'un'});
+    const nome=ins[0]?ins[0].value.trim():'';
+    if(nome) itens.push({pedido_id:p.id,nome:nome,quantidade:ins[1]?ins[1].value:'1',unidade:ins[2]?ins[2].value:'un'});
   });
   if(itens.length>0) await db.from('itens_pedido').insert(itens);
   notif('✅ Pedido criado!','Pedido salvo com sucesso.');
