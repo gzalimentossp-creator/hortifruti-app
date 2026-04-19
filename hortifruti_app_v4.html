@@ -423,6 +423,25 @@ async function chamarIAComFoto(base64, mediaType) {
 }
 
 
+
+function preencherItensIA(itens) {
+  if(!itens||!itens.length){ alert('A IA não encontrou itens. Adicione manualmente.'); return; }
+  const c = document.getElementById('itens-novo-pedido');
+  c.innerHTML = '';
+  itens.forEach(item => {
+    const d = document.createElement('div');
+    d.className = 'item-ia-row';
+    d.innerHTML = `
+      <input type="text" value="${item.nome||''}" placeholder="Item" style="flex:1;">
+      <input type="text" value="${item.quantidade||''}" placeholder="Qtd" style="width:65px;">
+      <input type="text" value="${item.unidade||'un'}" placeholder="Un" style="width:55px;">
+      <button class="item-ia-remover" onclick="this.parentElement.remove()">✕</button>`;
+    c.appendChild(d);
+  });
+  document.getElementById('ia-loading').style.display='none';
+  notif('🤖 IA identificou '+itens.length+' itens!','Confira os itens abaixo e ajuste se necessário.');
+}
+
 // ===== INIT =====
 async function init() { await carregarListaFuncs(); }
 
