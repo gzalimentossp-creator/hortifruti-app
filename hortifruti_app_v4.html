@@ -714,7 +714,7 @@ async function confirmarCompraItem(){
     comprado:true,comprado_por:me.id,
     valor_pago:valor,preco_unitario:precoUnit,
     fornecedor_item:forn
-  }).eq('id',itemModal.id);
+  }).eq('id',itemModal.id).select();
   if(res.error){alert('Erro: '+res.error.message);return;}
   if(valor){
     await db.from('compras').insert({pedido_id:pedidoAberto.id,funcionario_id:me.id,fornecedor:forn,valor_pago:valor});
