@@ -706,8 +706,9 @@ async function confirmarCompraItem(){
   var sel=document.querySelector('#modal-fornecedores .forn-btn-grande.selected');
   if(!sel){alert('Selecione onde comprou.');return;}
   var isOutro=sel.textContent.trim().startsWith('➕');
-  var fornTexto=sel.querySelector('span')?sel.textContent.trim().replace(sel.querySelector('span').textContent,'').trim():sel.textContent.trim();
-  var forn=isOutro?document.getElementById('modal-outro-forn').value.trim():fornTexto;
+  var fornBruto=sel.textContent.trim();
+  var fornLimpo=fornBruto.replace(/^[^a-zA-ZÀ-ÿ0-9]*/,'').trim();
+  var forn=isOutro?document.getElementById('modal-outro-forn').value.trim():fornLimpo;
   if(!forn){alert('Digite o nome do fornecedor.');return;}
   var valor=parseFloat(document.getElementById('modal-valor').value)||0;
   var precoUnit=parseFloat(document.getElementById('modal-preco-unit').value)||0;
