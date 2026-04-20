@@ -708,13 +708,14 @@ async function confirmarCompraItem(){
   var isOutro=sel.textContent.trim().startsWith('➕');
   var forn=isOutro?document.getElementById('modal-outro-forn').value.trim():sel.textContent.trim().replace(/^.\s*/,'');
   if(!forn){alert('Digite o nome do fornecedor.');return;}
-  var valor=parseFloat(document.getElementById('modal-valor').value)||null;
-  var precoUnit=parseFloat(document.getElementById('modal-preco-unit').value)||null;
-  var res=await db.from('itens_pedido').update({
-    comprado:true,comprado_por:me.id,
-    valor_pago:valor,preco_unitario:precoUnit,
-    fornecedor_item:forn
-  }).eq('id',itemModal.id).select();
+  var valorStr=document.getElementById('modal-valor').value;
+  var valor=valorStr&&valorStr.trim()!==''?parseFloat(valorStr):null;
+  var precoUnitStr=document.getElementById('modal-preco-unit').value;
+  var precoUnit=precoUnitStr&&precoUnitStr.trim()!==''?parseFloat(precoUnitStr):null;
+  var updateData={comprado:true,comprado_por:me.id,fornecedor_item:forn};
+  if(valor!==null) updateData.valor_pago=valor;
+  if(precoUnit!==null) updateData.preco_unitario=precoUnit;
+  var res=await db.from('itens_pedido').update(updateData).eq('id',itemModal.id).select();
   if(res.error){alert('Erro: '+res.error.message);return;}
   if(valor){
     await db.from('compras').insert({pedido_id:pedidoAberto.id,funcionario_id:me.id,fornecedor:forn,valor_pago:valor});
