@@ -159,6 +159,29 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     </div>
   </div>
 
+  <!-- MODAL NOTA FISCAL -->
+  <div class="modal-overlay" id="modal-nota">
+    <div class="modal-box">
+      <div class="modal-titulo">📷 Enviar nota fiscal</div>
+      <p style="font-size:14px;color:#888;margin-bottom:1rem;">Tire uma foto da nota e informe o valor total.</p>
+      <div class="foto-box" id="nota-foto-box" onclick="document.getElementById('nota-foto-input').click()">
+        <div style="font-size:40px;margin-bottom:8px;">📷</div>
+        <div style="font-size:16px;font-weight:500;">Tirar foto da nota</div>
+      </div>
+      <input type="file" id="nota-foto-input" accept="image/*" capture="environment" style="display:none;" onchange="notaFotoSelecionada(this)">
+      <div class="foto-ok" id="nota-foto-ok" style="display:none;">
+        <div style="font-size:28px;margin-bottom:6px;">✅</div>
+        <div style="font-size:15px;font-weight:500;color:#166534;">Foto pronta!</div>
+      </div>
+      <div class="form-group" style="margin-top:12px;">
+        <label class="form-label">Valor total desta nota (R$)</label>
+        <input type="number" id="nota-valor" placeholder="Ex: 150,00" style="font-size:20px;padding:12px;text-align:center;">
+      </div>
+      <button class="btn-green" id="btn-salvar-nota" onclick="salvarNota()">✅ Salvar nota</button>
+      <button class="btn-outline" onclick="fecharModalNota()">Cancelar</button>
+    </div>
+  </div>
+
   <!-- LOGIN -->
   <div class="screen active" id="screen-login">
     <div style="text-align:center;padding:1.5rem 0 1rem;">
@@ -203,6 +226,8 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     <div id="btn-entrega-box" style="display:none;">
       <hr style="border:none;border-top:0.5px solid #e0e0d8;margin:1rem 0;">
       <div class="success-box">✅ Todos os itens foram comprados!</div>
+      <button class="btn-primary" onclick="abrirModalNota()" style="margin-bottom:8px;">🧾 Enviar nota fiscal</button>
+      <div id="notas-lista-func" style="margin-bottom:8px;"></div>
       <button class="btn-green" onclick="abrirModalEntrega()">📦 Registrar entrega</button>
     </div>
   </div>
@@ -494,6 +519,63 @@ function preencherItensIA(itens){
     c.appendChild(d);
   });
   notif('🤖 IA identificou '+itens.length+' itens!','Confira e ajuste se necessário.');
+}
+
+// ===== NOTAS FISCAIS =====
+var notaFotoFile = null;
+
+function abrirModalNota(){
+  notaFotoFile=null;
+  document.getElementById('nota-foto-box').style.display='block';
+  document.getElementById('nota-foto-ok').style.display='none';
+  document.getElementById('nota-valor').value='';
+  document.getElementById('modal-nota').classList.add('show');
+}
+function fecharModalNota(){
+  document.getElementById('modal-nota').classList.remove('show');
+  notaFotoFile=null;
+}
+function notaFotoSelecionada(input){
+  if(input.files&&input.files[0]){
+    notaFotoFile=input.files[0];
+    document.getElementById('nota-foto-box').style.display='none';
+    document.getElementById('nota-foto-ok').style.display='block';
+  }
+}
+async function salvarNota(){
+  var valor=parseFloat(document.getElementById('nota-valor').value)||0;
+  if(!notaFotoFile){alert('Tire uma foto da nota primeiro.');return;}
+  if(!valor){alert('Digite o valor total da nota.');return;}
+  var btn=document.getElementById('btn-salvar-nota');
+  btn.disabled=true;btn.textContent='⏳ Salvando...';
+  try{
+    var arq='nota_'+pedidoAberto.id+'_'+me.id+'_'+Date.now()+'.jpg';
+    var up=await db.storage.from('fotos').upload(arq,notaFotoFile);
+    var fotoUrl=null;
+    if(up.data){var ud=db.storage.from('fotos').getPublicUrl(arq);fotoUrl=ud.data?ud.data.publicUrl:null;}
+    await db.from('notas_fiscais').insert({
+      pedido_id:pedidoAberto.id,
+      funcionario_id:me.id,
+      foto_url:fotoUrl,
+      valor_total:valor
+    });
+    fecharModalNota();
+    notif('🧾 Nota salva!','Valor de R$ '+valor.toFixed(2)+' registrado.');
+    await carregarNotasFuncBox();
+  }catch(e){
+    alert('Erro: '+e.message);
+  }
+  btn.disabled=false;btn.textContent='✅ Salvar nota';
+}
+
+async function carregarNotasFuncBox(){
+  var c=document.getElementById('notas-lista-func');
+  if(!c) return;
+  var res=await db.from('notas_fiscais').select('*,funcionarios(nome)').eq('pedido_id',pedidoAberto.id).eq('funcionario_id',me.id);
+  var notas=res.data||[];
+  if(!notas.length){c.innerHTML='';return;}
+  var total=notas.reduce(function(s,n){return s+(parseFloat(n.valor_total)||0);},0);
+  c.innerHTML='<div class="success-box" style="margin:0;">🧾 '+notas.length+' nota(s) enviada(s) — Total: <strong>R$ '+total.toFixed(2)+'</strong></div>';
 }
 
 // ===== INIT =====
@@ -929,7 +1011,34 @@ async function verDetalheGestor(pid){
   }).join(''):'<p style="color:#888;font-size:13px;">Nenhuma compra registrada.</p>';
 
   var fotoHtml=p.foto_url?'<img src="'+p.foto_url+'" style="width:100%;border-radius:12px;margin-top:8px;"/>'
-    :'<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto</div>';
+    :'<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto de entrega</div>';
+
+  // Notas fiscais por funcionário
+  var resNotas=await db.from('notas_fiscais').select('*,funcionarios(nome)').eq('pedido_id',pid);
+  var todasNotas=resNotas.data||[];
+  var totalNotas=todasNotas.reduce(function(s,n){return s+(parseFloat(n.valor_total)||0);},0);
+  var notasPorFunc={};
+  todasNotas.forEach(function(n){
+    var nome=n.funcionarios?n.funcionarios.nome:'—';
+    if(!notasPorFunc[nome]) notasPorFunc[nome]={notas:[],total:0};
+    notasPorFunc[nome].notas.push(n);
+    notasPorFunc[nome].total+=(parseFloat(n.valor_total)||0);
+  });
+  var notasHtml=Object.keys(notasPorFunc).length>0?Object.keys(notasPorFunc).map(function(nome){
+    var fn=notasPorFunc[nome];
+    return '<div class="card" style="margin-bottom:8px;">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
+      '<div class="card-title">🧾 '+nome+'</div>'+
+      '<span style="font-weight:600;color:#1D9E75;">R$ '+fn.total.toFixed(2)+'</span>'+
+      '</div>'+
+      fn.notas.map(function(n){
+        return '<div style="margin-bottom:6px;">'+
+          (n.foto_url?'<img src="'+n.foto_url+'" style="width:100%;border-radius:8px;margin-bottom:4px;"/>':'')+
+          '<div style="font-size:12px;color:#888;">R$ '+parseFloat(n.valor_total).toFixed(2)+'</div>'+
+          '</div>';
+      }).join('')+
+      '</div>';
+  }).join(''):'<p style="color:#888;font-size:13px;">Nenhuma nota enviada ainda.</p>';
 
   var prazoHtml='';
   if(p.horario_entrega){
@@ -952,6 +1061,9 @@ async function verDetalheGestor(pid){
     +'<div class="card" style="padding:0.5rem 1rem;">'+itensHtml+'</div>'
     +'<p class="section-title" style="margin-top:1rem;">Compras por funcionário</p>'
     +comprasHtml
+    +'<p class="section-title" style="margin-top:1rem;">Notas fiscais</p>'
+    +(totalNotas>0?'<div class="total-box"><span class="total-label">🧾 Total das notas</span><span class="total-valor">R$ '+totalNotas.toFixed(2)+'</span></div>':'')+
+    notasHtml
     +'<p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>'
     +fotoHtml
     +(p.observacao?'<div class="info-box" style="margin-top:8px;">📝 '+p.observacao+'</div>':'')
