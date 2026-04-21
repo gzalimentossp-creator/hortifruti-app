@@ -223,11 +223,13 @@ input, select, textarea { width: 100%; padding: 9px 12px; border: 0.5px solid #c
     <div id="func-progresso-box" style="margin-bottom:1rem;"></div>
     <div class="info-box" id="func-instrucao">Toque em <strong>"Eu peguei"</strong> nos itens que você foi buscar.</div>
     <div id="func-itens-lista"></div>
+    <div id="btn-nota-avulsa" style="display:none;margin-top:12px;">
+      <button class="btn-primary" onclick="abrirModalNota()" style="margin-bottom:8px;">🧾 Enviar nota fiscal</button>
+      <div id="notas-lista-func" style="margin-bottom:8px;"></div>
+    </div>
     <div id="btn-entrega-box" style="display:none;">
       <hr style="border:none;border-top:0.5px solid #e0e0d8;margin:1rem 0;">
       <div class="success-box">✅ Todos os itens foram comprados!</div>
-      <button class="btn-primary" onclick="abrirModalNota()" style="margin-bottom:8px;">🧾 Enviar nota fiscal</button>
-      <div id="notas-lista-func" style="margin-bottom:8px;"></div>
       <button class="btn-green" onclick="abrirModalEntrega()">📦 Registrar entrega</button>
     </div>
   </div>
@@ -646,7 +648,13 @@ async function carregarPedidosFunc(){
   c.innerHTML='<div class="loading"><span class="spinner">⏳</span><br>Carregando...</div>';
   var hoje=new Date().toISOString().split('T')[0];
   var res=await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).neq('status','cancelado').order('data_entrega',{ascending:true});
-  var pedidos=res.data;
+  var pedidos=res.data||[];
+  // Também buscar pedidos entregues recentes (últimos 3 dias) para envio de notas
+  var ontem=new Date();ontem.setDate(ontem.getDate()-3);
+  var ontemStr=ontem.toISOString().split('T')[0];
+  var res2=await db.from('pedidos').select('*,clientes(nome)').eq('status','entregue').gte('data_entrega',ontemStr).order('data_entrega',{ascending:false});
+  var entregues=(res2.data||[]).filter(function(p){return !pedidos.find(function(x){return x.id===p.id;});});
+  pedidos=pedidos.concat(entregues);
   if(!pedidos||!pedidos.length){
     c.innerHTML='<div style="text-align:center;padding:40px;color:#888;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:16px;font-weight:500;">Nenhum pedido aberto!</div></div>';
     return;
@@ -694,6 +702,7 @@ async function abrirPedido(pid){
     prazoBox.innerHTML='';
   }
   renderDetalhe();
+  await carregarNotasFuncBox();
   go('screen-func-pedido-detalhe');
 }
 
@@ -743,6 +752,10 @@ function renderDetalhe(){
   }).join('');
   document.getElementById('func-itens-lista').innerHTML='<div class="card" style="padding:0.5rem 1rem;">'+(itensHtml||'<p style="color:#888;text-align:center;padding:12px;">Sem itens.</p>')+'</div>';
   document.getElementById('btn-entrega-box').style.display=pct===100&&total>0?'block':'none';
+  // Mostrar botão de nota sempre que o funcionário tiver comprado pelo menos 1 item
+  var euCompreiAlgo=itens.some(function(i){return i.comprado_por===(me&&me.id);});
+  var notaBox=document.getElementById('btn-nota-avulsa');
+  if(notaBox) notaBox.style.display=euCompreiAlgo?'block':'none';
   document.getElementById('func-instrucao').style.display=comp===total&&total>0?'none':'block';
 }
 
