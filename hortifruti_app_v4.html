@@ -647,23 +647,30 @@ async function carregarPedidosFunc(){
   var c=document.getElementById('lista-pedidos-func');
   c.innerHTML='<div class="loading"><span class="spinner">⏳</span><br>Carregando...</div>';
   var hoje=new Date().toISOString().split('T')[0];
+  var agora=new Date();
+
   var res=await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).neq('status','cancelado').order('data_entrega',{ascending:true});
   var pedidos=res.data||[];
-  // Também buscar pedidos entregues recentes (últimos 3 dias) para envio de notas
+
+  // Pedidos entregues recentes (últimos 3 dias)
   var ontem=new Date();ontem.setDate(ontem.getDate()-3);
-  var ontemStr=ontem.toISOString().split('T')[0];
-  var res2=await db.from('pedidos').select('*,clientes(nome)').eq('status','entregue').gte('data_entrega',ontemStr).order('data_entrega',{ascending:false});
+  var res2=await db.from('pedidos').select('*,clientes(nome)').eq('status','entregue').gte('data_entrega',ontem.toISOString().split('T')[0]).order('data_entrega',{ascending:false});
   var entregues=(res2.data||[]).filter(function(p){return !pedidos.find(function(x){return x.id===p.id;});});
   pedidos=pedidos.concat(entregues);
-  if(!pedidos||!pedidos.length){
+
+  if(!pedidos.length){
     c.innerHTML='<div style="text-align:center;padding:40px;color:#888;"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-size:16px;font-weight:500;">Nenhum pedido aberto!</div></div>';
     return;
   }
-  var agora=new Date();
-  var htmls=await Promise.all(pedidos.map(async function(p){
-    var res2=await db.from('itens_pedido').select('comprado').eq('pedido_id',p.id);
-    var itens=res2.data;
-    var total=itens?itens.length:0,comp=itens?itens.filter(function(i){return i.comprado;}).length:0;
+
+  // Buscar todos os itens de uma vez
+  var res3=await db.from('itens_pedido').select('pedido_id,comprado');
+  var todosItens=res3.data||[];
+
+  var html='';
+  pedidos.forEach(function(p){
+    var itens=todosItens.filter(function(i){return i.pedido_id===p.id;});
+    var total=itens.length,comp=itens.filter(function(i){return i.comprado;}).length;
     var pct=total>0?Math.round(comp/total*100):0;
     var cor=pct===100?'#1D9E75':pct>0?'#1e40af':'#ccc';
     var label=pct===100?'✅ Pronto para entregar':pct>0?(comp+'/'+total+' itens comprados'):(total+' itens aguardando');
@@ -674,15 +681,15 @@ async function carregarPedidosFunc(){
       if(prazoDate<agora&&p.status!=='entregue') prazoStr='🚨 ATRASADO! '+prazoStr;
     }
     var atrasado=prazoStr.includes('ATRASADO');
-    return '<div class="pedido-card'+(atrasado?' atrasado':'')+'" onclick="abrirPedido(\''+p.id+'\')">'
-      +'<div style="font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:2px;">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>'
-      +'<div style="font-size:13px;color:'+(atrasado?'#991b1b':'#888')+';margin-bottom:'+(prazoStr?'4px':'8px')+';"><span>📅 '+(p.data_entrega||'')+'</span></div>'
-      +(prazoStr?'<div style="font-size:13px;color:'+(atrasado?'#991b1b':'#856404')+';margin-bottom:8px;font-weight:'+(atrasado?'600':'400')+';">'+prazoStr+'</div>':'')
-      +'<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;background:'+cor+';"></div></div>'
-      +'<div style="font-size:11px;color:#888;margin-top:3px;">'+label+'</div>'
-      +'</div>';
-  }));
-  c.innerHTML=htmls.join('');
+    html+='<div class="pedido-card'+(atrasado?' atrasado':'')+'" onclick="abrirPedido(\''+p.id+'\')">';
+    html+='<div style="font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:2px;">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>';
+    html+='<div style="font-size:13px;color:'+(atrasado?'#991b1b':'#888')+';margin-bottom:'+(prazoStr?'4px':'8px')+';"><span>📅 '+(p.data_entrega||'')+'</span></div>';
+    if(prazoStr) html+='<div style="font-size:13px;color:'+(atrasado?'#991b1b':'#856404')+';margin-bottom:8px;font-weight:'+(atrasado?'600':'400')+';">'+prazoStr+'</div>';
+    html+='<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;background:'+cor+';"></div></div>';
+    html+='<div style="font-size:11px;color:#888;margin-top:3px;">'+label+'</div>';
+    html+='</div>';
+  });
+  c.innerHTML=html;
 }
 
 async function abrirPedido(pid){
@@ -871,46 +878,42 @@ async function confirmarEntrega(){
 // ===== GESTOR =====
 async function carregarPedidosGestor(){
   var c=document.getElementById('lista-pedidos-gestor');
+  c.innerHTML='<div class="loading"><span class="spinner">⏳</span><br>Carregando...</div>';
   var hoje=new Date().toISOString().split('T')[0];
+  var agora=new Date();
+
+  // Uma query só para pedidos
   var res=await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).neq('status','cancelado').order('data_entrega',{ascending:true});
   var data=res.data||[];
 
-  // Quem está comprando agora
-  var comprando=[];
-  var res2=await db.from('pedidos').select('*,clientes(nome)').eq('status','pendente').gte('data_entrega',hoje);
-  var pendentes=res2.data||[];
-  for(var i=0;i<pendentes.length;i++){
-    var res3=await db.from('itens_pedido').select('comprado,comprado_por,funcionarios(nome)').eq('pedido_id',pendentes[i].id).eq('comprado',true);
-    var comprados=res3.data||[];
-    if(comprados.length>0){
-      var funcs=[...new Set(comprados.filter(function(x){return x.funcionarios;}).map(function(x){return x.funcionarios.nome;}))];
-      if(funcs.length>0) comprando.push(funcs.join(', ')+' — '+pendentes[i].clientes?.nome);
-    }
-  }
-  var compBox=document.getElementById('comprando-agora');
-  if(comprando.length>0){
-    compBox.innerHTML='<div class="info-box" style="margin-bottom:8px;"><span class="pulse">🛒</span> <strong>Comprando agora:</strong> '+comprando.join(' | ')+'</div>';
-  }else{
-    compBox.innerHTML='';
-  }
+  // Uma query só para todos os itens dos pedidos de hoje
+  var res2=await db.from('itens_pedido').select('pedido_id,comprado,valor_pago,comprado_por,funcionarios(nome)');
+  var todosItens=res2.data||[];
 
   // Alertas de atraso
-  var agora=new Date();
   var atrasados=data.filter(function(p){
     if(p.status==='entregue') return false;
     if(!p.horario_entrega) return false;
-    var prazo=new Date(p.data_entrega+'T'+p.horario_entrega);
-    return prazo<agora;
+    return new Date(p.data_entrega+'T'+p.horario_entrega)<agora;
   });
-  var alertasEl=document.getElementById('alertas-gestor');
-  alertasEl.innerHTML=atrasados.length>0
-    ?'<div class="alert-box">🚨 '+atrasados.length+' pedido(s) atrasado(s)!</div>':'' ;
+  document.getElementById('alertas-gestor').innerHTML=atrasados.length>0
+    ?'<div class="alert-box">🚨 '+atrasados.length+' pedido(s) atrasado(s)!</div>':'';
+
+  // Quem está comprando agora
+  var comprando=[];
+  data.filter(function(p){return p.status==='pendente';}).forEach(function(p){
+    var itensP=todosItens.filter(function(i){return i.pedido_id===p.id&&i.comprado&&i.funcionarios;});
+    var funcs=[...new Set(itensP.map(function(i){return i.funcionarios.nome;}))];
+    if(funcs.length>0) comprando.push(funcs.join(', ')+' — '+(p.clientes?p.clientes.nome:''));
+  });
+  var compBox=document.getElementById('comprando-agora');
+  compBox.innerHTML=comprando.length>0?'<div class="info-box" style="margin-bottom:8px;"><span class="pulse">🛒</span> <strong>Comprando agora:</strong> '+comprando.join(' | ')+'</div>':'';
 
   if(!data.length){c.innerHTML='<p style="color:#888;text-align:center;padding:20px;">Nenhum pedido ativo.</p>';return;}
 
-  var htmls=await Promise.all(data.map(async function(p){
-    var res4=await db.from('itens_pedido').select('comprado,valor_pago').eq('pedido_id',p.id);
-    var itens=res4.data||[];
+  var html='';
+  data.forEach(function(p){
+    var itens=todosItens.filter(function(i){return i.pedido_id===p.id;});
     var total=itens.length,comp=itens.filter(function(i){return i.comprado;}).length;
     var pct=total>0?Math.round(comp/total*100):0;
     var totalGasto=itens.filter(function(i){return i.valor_pago;}).reduce(function(s,i){return s+(parseFloat(i.valor_pago)||0);},0);
@@ -918,24 +921,24 @@ async function carregarPedidosGestor(){
     var info=pct>0&&pct<100&&p.status!=='entregue'?['Comprando','badge-buying']:(badgeMap[p.status]||badgeMap['pendente']);
     var atrasado=p.horario_entrega&&new Date(p.data_entrega+'T'+p.horario_entrega)<agora&&p.status!=='entregue';
     var prazoStr=p.horario_entrega?'⏰ até '+p.horario_entrega.substring(0,5)+(atrasado?' 🚨':''):'';
-    return '<div class="card'+(atrasado?' alert-box':'')+'" style="margin-bottom:12px;'+(atrasado?'border:1px solid #e24b4a;':'')+'">'
-      +'<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">'
-      +'<div class="card-title" style="cursor:pointer;" onclick="verDetalheGestor(\''+p.id+'\')">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>'
-      +'<span class="badge '+info[1]+'">'+info[0]+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:'+(atrasado?'#991b1b':'#888')+';margin-bottom:8px;">📅 '+(p.data_entrega||'')+(prazoStr?' • '+prazoStr:'')+'</div>'
-      +'<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;"></div></div>'
-      +'<div style="display:flex;justify-content:space-between;margin-top:4px;margin-bottom:10px;">'
-      +'<span style="font-size:11px;color:#888;">'+comp+'/'+total+' itens</span>'
-      +(totalGasto>0?'<span style="font-size:12px;font-weight:500;color:#1D9E75;">R$ '+totalGasto.toFixed(2)+'</span>':'')
-      +'</div>'
-      +'<div style="display:flex;gap:8px;">'
-      +'<button onclick="verDetalheGestor(\''+p.id+'\')" style="flex:1;padding:8px;background:#f7f7f3;border:0.5px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;">Ver</button>'
-      +'<button onclick="editarPedido(\''+p.id+'\')" style="flex:1;padding:8px;background:#dbeafe;color:#1e40af;border:none;border-radius:8px;font-size:13px;cursor:pointer;">✏️ Editar</button>'
-      +'<button onclick="excluirPedido(\''+p.id+'\')" style="padding:8px 12px;background:#fde8e8;color:#991b1b;border:none;border-radius:8px;font-size:13px;cursor:pointer;">🗑️</button>'
-      +'</div></div>';
-  }));
-  c.innerHTML=htmls.join('');
+    html+='<div class="card'+(atrasado?' alert-box':'')+'" style="margin-bottom:12px;'+(atrasado?'border:1px solid #e24b4a;':'')+'">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px;">';
+    html+='<div class="card-title" style="cursor:pointer;" onclick="verDetalheGestor(\''+p.id+'\')">'+(p.clientes?p.clientes.nome:'Cliente')+'</div>';
+    html+='<span class="badge '+info[1]+'">'+info[0]+'</span>';
+    html+='</div>';
+    html+='<div style="font-size:12px;color:'+(atrasado?'#991b1b':'#888')+';margin-bottom:8px;">📅 '+(p.data_entrega||'')+(prazoStr?' • '+prazoStr:'')+'</div>';
+    html+='<div class="progresso-bar"><div class="progresso-fill" style="width:'+pct+'%;"></div></div>';
+    html+='<div style="display:flex;justify-content:space-between;margin-top:4px;margin-bottom:10px;">';
+    html+='<span style="font-size:11px;color:#888;">'+comp+'/'+total+' itens</span>';
+    if(totalGasto>0) html+='<span style="font-size:12px;font-weight:500;color:#1D9E75;">R$ '+totalGasto.toFixed(2)+'</span>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:8px;">';
+    html+='<button onclick="verDetalheGestor(\''+p.id+'\')" style="flex:1;padding:8px;background:#f7f7f3;border:0.5px solid #ccc;border-radius:8px;font-size:13px;cursor:pointer;">Ver</button>';
+    html+='<button onclick="editarPedido(\''+p.id+'\')" style="flex:1;padding:8px;background:#dbeafe;color:#1e40af;border:none;border-radius:8px;font-size:13px;cursor:pointer;">✏️ Editar</button>';
+    html+='<button onclick="excluirPedido(\''+p.id+'\')" style="padding:8px 12px;background:#fde8e8;color:#991b1b;border:none;border-radius:8px;font-size:13px;cursor:pointer;">🗑️</button>';
+    html+='</div></div>';
+  });
+  c.innerHTML=html;
 }
 
 async function excluirPedido(pid){
