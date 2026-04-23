@@ -989,47 +989,49 @@ async function verDetalheGestor(pid){
   var itens=res2.data||[];
   var res3=await db.from('compras').select('*,funcionarios(nome)').eq('pedido_id',pid);
   var compras=res3.data||[];
+  var resNotas=await db.from('notas_fiscais').select('*,funcionarios(nome)').eq('pedido_id',pid);
+  var todasNotas=resNotas.data||[];
   pedidoAberto=Object.assign({},p,{itens:itens});
   document.getElementById('gestor-detalhe-titulo').textContent=p.clientes?p.clientes.nome:'Pedido';
 
   var total=itens.length,comp=itens.filter(function(i){return i.comprado;}).length;
   var pct=total>0?Math.round(comp/total*100):0;
   var totalGasto=itens.filter(function(i){return i.valor_pago;}).reduce(function(s,i){return s+(parseFloat(i.valor_pago)||0);},0);
+  var totalNotas=todasNotas.reduce(function(s,n){return s+(parseFloat(n.valor_total)||0);},0);
 
-  var itensHtml=itens.map(function(item){
+  // Itens
+  var itensHtml='';
+  itens.forEach(function(item){
     var valorStr=item.valor_pago?'<span style="color:#1D9E75;font-weight:500;font-size:12px;">R$ '+parseFloat(item.valor_pago).toFixed(2)+'</span>':'';
     var fornStr=item.fornecedor_item?'<span style="color:#888;font-size:11px;">📍'+item.fornecedor_item+'</span>':'';
-    return '<div class="item-pedido-row">'
-      +'<div class="item-status-icon">'+(item.comprado?'✅':'🔲')+'</div>'
-      +'<div class="item-info">'
-      +'<div class="item-info-nome">'+item.nome+'</div>'
-      +'<div class="item-info-sub">'
-      +(item.comprado?'Comprado por '+(item.funcionarios?item.funcionarios.nome:'—'):'Aguardando')
-      +(fornStr?' • '+fornStr:'')
-      +'</div>'
-      +'</div>'
-      +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">'
-      +'<span class="item-qty">'+item.quantidade+' '+(item.unidade||'')+'</span>'
-      +(valorStr?valorStr:'')
-      +(item.comprado?'<button class="btn-desfazer" onclick="desfazerItem(\''+item.id+'\')">↩</button>':'')
-      +'</div></div>';
-  }).join('');
+    itensHtml+='<div class="item-pedido-row">';
+    itensHtml+='<div class="item-status-icon">'+(item.comprado?'✅':'🔲')+'</div>';
+    itensHtml+='<div class="item-info">';
+    itensHtml+='<div class="item-info-nome">'+item.nome+'</div>';
+    itensHtml+='<div class="item-info-sub">'+(item.comprado?'Comprado por '+(item.funcionarios?item.funcionarios.nome:'—'):'Aguardando')+(fornStr?' • '+fornStr:'')+'</div>';
+    itensHtml+='</div>';
+    itensHtml+='<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">';
+    itensHtml+='<span class="item-qty">'+item.quantidade+' '+(item.unidade||'')+'</span>';
+    if(valorStr) itensHtml+=valorStr;
+    if(item.comprado) itensHtml+='<button class="btn-desfazer" onclick="desfazerItem(\''+item.id+'\')">↩</button>';
+    itensHtml+='</div></div>';
+  });
 
-  var comprasHtml=(compras&&compras.length>0)?compras.map(function(c){
-    return '<div class="card" style="margin-bottom:8px;">'
-      +'<div style="display:flex;justify-content:space-between;">'
-      +'<div class="card-title">'+(c.funcionarios?c.funcionarios.nome:'—')+'</div>'
-      +'<span style="font-weight:600;color:#1D9E75;">R$ '+parseFloat(c.valor_pago||0).toFixed(2)+'</span>'
-      +'</div><div class="card-sub">📍 '+(c.fornecedor||'—')+'</div></div>';
-  }).join(''):'<p style="color:#888;font-size:13px;">Nenhuma compra registrada.</p>';
+  // Compras
+  var comprasHtml='';
+  if(compras&&compras.length>0){
+    compras.forEach(function(c){
+      comprasHtml+='<div class="card" style="margin-bottom:8px;">';
+      comprasHtml+='<div style="display:flex;justify-content:space-between;">';
+      comprasHtml+='<div class="card-title">'+(c.funcionarios?c.funcionarios.nome:'—')+'</div>';
+      comprasHtml+='<span style="font-weight:600;color:#1D9E75;">R$ '+parseFloat(c.valor_pago||0).toFixed(2)+'</span>';
+      comprasHtml+='</div><div class="card-sub">📍 '+(c.fornecedor||'—')+'</div></div>';
+    });
+  } else {
+    comprasHtml='<p style="color:#888;font-size:13px;">Nenhuma compra registrada.</p>';
+  }
 
-  var fotoHtml=p.foto_url?'<img src="'+p.foto_url+'" style="width:100%;border-radius:12px;margin-top:8px;"/>'
-    :'<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto de entrega</div>';
-
-  // Notas fiscais por funcionário
-  var resNotas=await db.from('notas_fiscais').select('*,funcionarios(nome)').eq('pedido_id',pid);
-  var todasNotas=resNotas.data||[];
-  var totalNotas=todasNotas.reduce(function(s,n){return s+(parseFloat(n.valor_total)||0);},0);
+  // Notas fiscais
   var notasPorFunc={};
   todasNotas.forEach(function(n){
     var nome=n.funcionarios?n.funcionarios.nome:'—';
@@ -1064,10 +1066,42 @@ async function verDetalheGestor(pid){
     notasHtml='<p style="color:#888;font-size:13px;">Nenhuma nota enviada ainda.</p>';
   }
 
-  +'<p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>'
-    +fotoHtml
-    +(p.observacao?'<div class="info-box" style="margin-top:8px;">📝 '+p.observacao+'</div>':'')
-    +'<button class="btn-red" onclick="excluirPedido(\''+pid+'\')" style="margin-top:16px;">🗑️ Excluir pedido</button>';
+  // Foto entrega
+  var fotoHtml=p.foto_url
+    ?'<a href="'+p.foto_url+'" target="_blank"><img src="'+p.foto_url+'" style="width:100%;border-radius:12px;margin-top:8px;cursor:pointer;"/></a>'
+    :'<div style="background:#f7f7f3;border-radius:8px;padding:16px;text-align:center;color:#888;font-size:13px;">📷 Aguardando foto de entrega</div>';
+
+  // Prazo
+  var prazoHtml='';
+  if(p.horario_entrega){
+    var atrasado=new Date(p.data_entrega+'T'+p.horario_entrega)<new Date()&&p.status!=='entregue';
+    prazoHtml='<div class="'+(atrasado?'alert-box':'warning-box')+'" style="margin-bottom:12px;">⏰ '+(atrasado?'ATRASADO! ':'')+'Entregar até '+p.horario_entrega.substring(0,5)+' do dia '+p.data_entrega+'</div>';
+  }
+  var horarioEntregaHtml=p.horario_entrega_real?'<div class="success-box" style="margin-bottom:12px;">✅ Entregue às '+new Date(p.horario_entrega_real).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>':'';
+
+  // Montar HTML final
+  var html=prazoHtml+horarioEntregaHtml;
+  html+='<div style="margin-bottom:1rem;">';
+  html+='<div style="display:flex;justify-content:space-between;margin-bottom:4px;">';
+  html+='<span style="font-size:13px;font-weight:500;">Progresso</span>';
+  html+='<span style="font-size:13px;font-weight:600;color:'+(pct===100?'#166534':'#1e40af')+';">'+comp+'/'+total+' itens</span>';
+  html+='</div>';
+  html+='<div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:'+pct+'%;background:'+(pct===100?'#1D9E75':'#1e40af')+';"></div></div>';
+  html+='</div>';
+  if(totalGasto>0) html+='<div class="total-box"><span class="total-label">💰 Total do pedido</span><span class="total-valor">R$ '+totalGasto.toFixed(2)+'</span></div>';
+  html+='<p class="section-title">Itens</p>';
+  html+='<div class="card" style="padding:0.5rem 1rem;">'+itensHtml+'</div>';
+  html+='<p class="section-title" style="margin-top:1rem;">Compras por funcionário</p>';
+  html+=comprasHtml;
+  html+='<p class="section-title" style="margin-top:1rem;">Notas fiscais</p>';
+  if(totalNotas>0) html+='<div class="total-box"><span class="total-label">🧾 Total das notas</span><span class="total-valor">R$ '+totalNotas.toFixed(2)+'</span></div>';
+  html+=notasHtml;
+  html+='<p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>';
+  html+=fotoHtml;
+  if(p.observacao) html+='<div class="info-box" style="margin-top:8px;">📝 '+p.observacao+'</div>';
+  html+='<button class="btn-red" onclick="excluirPedido(\''+pid+'\')" style="margin-top:16px;">🗑️ Excluir pedido</button>';
+
+  document.getElementById('gestor-detalhe-conteudo').innerHTML=html;
   go('screen-detalhe-gestor');
 }
 
