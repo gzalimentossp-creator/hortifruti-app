@@ -1037,47 +1037,34 @@ async function verDetalheGestor(pid){
     notasPorFunc[nome].notas.push(n);
     notasPorFunc[nome].total+=(parseFloat(n.valor_total)||0);
   });
-  var notasHtml=Object.keys(notasPorFunc).length>0?Object.keys(notasPorFunc).map(function(nome){
-    var fn=notasPorFunc[nome];
-    return '<div class="card" style="margin-bottom:8px;">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'+
-      '<div class="card-title">🧾 '+nome+'</div>'+
-      '<span style="font-weight:600;color:#1D9E75;">R$ '+fn.total.toFixed(2)+'</span>'+
-      '</div>'+
-      fn.notas.map(function(n){
-        return '<div style="margin-bottom:10px;border-bottom:0.5px solid #f0f0ea;padding-bottom:10px;">'+
-          (n.foto_url?'<img src="'+n.foto_url+'" style="width:100%;border-radius:8px;margin-bottom:4px;"/>':'')+
-          '<div style="font-size:14px;font-weight:500;color:#1D9E75;">R$ '+parseFloat(n.valor_total).toFixed(2)+'</div>'+
-          '</div>';
-      }).join('')+
-      '</div>';
-  }).join(''):'<p style="color:#888;font-size:13px;">Nenhuma nota enviada ainda.</p>';
-
-  var prazoHtml='';
-  if(p.horario_entrega){
-    var atrasado=new Date(p.data_entrega+'T'+p.horario_entrega)<new Date()&&p.status!=='entregue';
-    prazoHtml='<div class="'+(atrasado?'alert-box':'warning-box')+'" style="margin-bottom:12px;">⏰ '+(atrasado?'ATRASADO! ':'')+'Entregar até '+p.horario_entrega.substring(0,5)+' do dia '+p.data_entrega+'</div>';
+  var notasHtml='';
+  if(Object.keys(notasPorFunc).length>0){
+    Object.keys(notasPorFunc).forEach(function(nome){
+      var fn=notasPorFunc[nome];
+      notasHtml+='<div class="card" style="margin-bottom:8px;">';
+      notasHtml+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">';
+      notasHtml+='<div class="card-title">🧾 '+nome+'</div>';
+      notasHtml+='<span style="font-weight:600;color:#1D9E75;">R$ '+fn.total.toFixed(2)+'</span>';
+      notasHtml+='</div>';
+      fn.notas.forEach(function(n){
+        notasHtml+='<div style="margin-bottom:10px;border-bottom:0.5px solid #f0f0ea;padding-bottom:10px;">';
+        if(n.foto_url){
+          notasHtml+='<a href="'+n.foto_url+'" target="_blank">';
+          notasHtml+='<img src="'+n.foto_url+'" style="width:100%;border-radius:8px;margin-bottom:6px;cursor:pointer;"/>';
+          notasHtml+='</a>';
+        }
+        notasHtml+='<div style="display:flex;justify-content:space-between;align-items:center;">';
+        notasHtml+='<div style="font-size:14px;font-weight:500;color:#1D9E75;">R$ '+parseFloat(n.valor_total).toFixed(2)+'</div>';
+        notasHtml+='<button data-nid="'+n.id+'" class="btn-excluir-nota" style="padding:4px 10px;background:#fde8e8;color:#991b1b;border:none;border-radius:6px;font-size:11px;cursor:pointer;">🗑️ Excluir</button>';
+        notasHtml+='</div></div>';
+      });
+      notasHtml+='</div>';
+    });
+  } else {
+    notasHtml='<p style="color:#888;font-size:13px;">Nenhuma nota enviada ainda.</p>';
   }
-  var horarioEntregaHtml=p.horario_entrega_real?'<div class="success-box" style="margin-bottom:12px;">✅ Entregue às '+new Date(p.horario_entrega_real).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})+'</div>':'';
 
-  document.getElementById('gestor-detalhe-conteudo').innerHTML=
-    prazoHtml+horarioEntregaHtml
-    +'<div style="margin-bottom:1rem;">'
-    +'<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
-    +'<span style="font-size:13px;font-weight:500;">Progresso</span>'
-    +'<span style="font-size:13px;font-weight:600;color:'+(pct===100?'#166534':'#1e40af')+';">'+comp+'/'+total+' itens</span>'
-    +'</div>'
-    +'<div class="progresso-bar" style="height:10px;"><div class="progresso-fill" style="width:'+pct+'%;background:'+(pct===100?'#1D9E75':'#1e40af')+';"></div></div>'
-    +'</div>'
-    +(totalGasto>0?'<div class="total-box"><span class="total-label">💰 Total do pedido</span><span class="total-valor">R$ '+totalGasto.toFixed(2)+'</span></div>':'')
-    +'<p class="section-title">Itens</p>'
-    +'<div class="card" style="padding:0.5rem 1rem;">'+itensHtml+'</div>'
-    +'<p class="section-title" style="margin-top:1rem;">Compras por funcionário</p>'
-    +comprasHtml
-    +'<p class="section-title" style="margin-top:1rem;">Notas fiscais</p>'
-    +(totalNotas>0?'<div class="total-box"><span class="total-label">🧾 Total das notas</span><span class="total-valor">R$ '+totalNotas.toFixed(2)+'</span></div>':'')+
-    notasHtml
-    +'<p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>'
+  +'<p class="section-title" style="margin-top:1rem;">Comprovante de entrega</p>'
     +fotoHtml
     +(p.observacao?'<div class="info-box" style="margin-top:8px;">📝 '+p.observacao+'</div>':'')
     +'<button class="btn-red" onclick="excluirPedido(\''+pid+'\')" style="margin-top:16px;">🗑️ Excluir pedido</button>';
@@ -1342,6 +1329,24 @@ async function salvarPedido(){
   }
   go('screen-dono');
   carregarPedidosGestor();
+}
+
+// Event delegation para botões de excluir nota
+document.addEventListener('click', function(e){
+  if(e.target && e.target.classList.contains('btn-excluir-nota')){
+    var nid = e.target.getAttribute('data-nid');
+    excluirNota(nid);
+  }
+});
+
+async function excluirNota(notaId){
+  var senha=prompt('Digite a senha do gestor para excluir esta nota:');
+  if(!senha) return;
+  if(senha!==getSenha()){alert('Senha incorreta!');return;}
+  if(!confirm('Excluir esta nota fiscal?')) return;
+  await db.from('notas_fiscais').delete().eq('id',notaId);
+  notif('🗑️ Nota excluída','Nota fiscal removida.');
+  if(pedidoAberto) verDetalheGestor(pedidoAberto.id);
 }
 
 init();
