@@ -1045,9 +1045,9 @@ async function verDetalheGestor(pid){
       '<span style="font-weight:600;color:#1D9E75;">R$ '+fn.total.toFixed(2)+'</span>'+
       '</div>'+
       fn.notas.map(function(n){
-        return '<div style="margin-bottom:6px;">'+
+        return '<div style="margin-bottom:10px;border-bottom:0.5px solid #f0f0ea;padding-bottom:10px;">'+
           (n.foto_url?'<img src="'+n.foto_url+'" style="width:100%;border-radius:8px;margin-bottom:4px;"/>':'')+
-          '<div style="font-size:12px;color:#888;">R$ '+parseFloat(n.valor_total).toFixed(2)+'</div>'+
+          '<div style="font-size:14px;font-weight:500;color:#1D9E75;">R$ '+parseFloat(n.valor_total).toFixed(2)+'</div>'+
           '</div>';
       }).join('')+
       '</div>';
