@@ -663,9 +663,13 @@ async function carregarPedidosFunc(){
     return;
   }
 
-  // Buscar todos os itens de uma vez
-  var res3=await db.from('itens_pedido').select('pedido_id,comprado');
-  var todosItens=res3.data||[];
+  // Buscar itens só dos pedidos carregados
+  var ids=pedidos.map(function(p){return p.id;});
+  var todosItens=[];
+  if(ids.length>0){
+    var res3=await db.from('itens_pedido').select('pedido_id,comprado').in('pedido_id',ids);
+    todosItens=res3.data||[];
+  }
 
   var html='';
   pedidos.forEach(function(p){
@@ -886,9 +890,13 @@ async function carregarPedidosGestor(){
   var res=await db.from('pedidos').select('*,clientes(nome)').gte('data_entrega',hoje).neq('status','cancelado').order('data_entrega',{ascending:true});
   var data=res.data||[];
 
-  // Uma query só para todos os itens dos pedidos de hoje
-  var res2=await db.from('itens_pedido').select('pedido_id,comprado,valor_pago,comprado_por,funcionarios(nome)');
-  var todosItens=res2.data||[];
+  // Buscar itens só dos pedidos carregados
+  var ids=data.map(function(p){return p.id;});
+  var todosItens=[];
+  if(ids.length>0){
+    var res2=await db.from('itens_pedido').select('pedido_id,comprado,valor_pago,comprado_por,funcionarios(nome)').in('pedido_id',ids);
+    todosItens=res2.data||[];
+  }
 
   // Alertas de atraso
   var atrasados=data.filter(function(p){
